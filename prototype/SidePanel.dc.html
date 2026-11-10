@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toki · Home side panel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- Toki's Home side panel: workspace header, find box, shortcuts, then Starred / Channels / Direct messages. -->
+<aside aria-label="Acme" style="width:{{width}};height:{{height}};box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;background:var(--sb,#161622);color:var(--sb-ink,#C9CAE6);font-family:var(--font,'Inter','Segoe UI',system-ui,sans-serif);font-size:15px;line-height:1.45;">
+  <header style="flex:none;display:flex;align-items:center;gap:4px;padding:10px 8px 6px 8px;">
+    <button type="button" aria-haspopup="menu" style="display:flex;align-items:center;gap:4px;min-width:0;padding:4px 8px;border:0;border-radius:6px;background:none;color:var(--sb-strong,#fff);font:700 16px var(--font,'Inter',sans-serif);">Acme<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+    <span style="width:8px;height:8px;border-radius:50%;background:#5DD3A0;flex:none;" role="img" aria-label="Connected"></span>
+    <span style="flex:1;"></span>
+    <button type="button" aria-label="Filter and sort" aria-haspopup="menu" style="width:28px;height:28px;border:0;border-radius:6px;background:none;color:var(--sb-ink,#C9CAE6);display:inline-grid;place-items:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg></button>
+    <button type="button" aria-label="New message" style="width:28px;height:28px;border:0;border-radius:6px;background:none;color:var(--sb-ink,#C9CAE6);display:inline-grid;place-items:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg></button>
+  </header>
+  <div style="flex:none;padding:0 12px 8px;">
+    <a href="JumpTo.dc.html" aria-label="Find a conversation" style="display:block;width:100%;box-sizing:border-box;padding:6px 10px;border-radius:6px;background:var(--sbh,#22223A);color:var(--sb-ink,#C9CAE6);font-size:13px;text-decoration:none;">Find a conversation</a>
+  </div>
+  <div style="flex:1;min-height:0;overflow:hidden;padding-bottom:12px;">
+    <!-- Shortcuts: Icon rail layout -->
+    <sc-if value="{{rail}}" hint-placeholder-val="{{true}}">
+      <nav aria-label="Shortcuts" style="display:grid;padding:0 8px 2px;">
+        <a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg><span style="flex:1;">All unreads</span></a>
+        <a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M7 11h10"/><path d="M7 15h6"/><path d="M7 7h8"/></svg><span style="flex:1;">Threads</span></a>
+        <a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg><span style="flex:1;">Meet</span></a>
+        <a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg><span style="flex:1;">Drafts</span></a>
+        <a href="Later.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"/></svg><span style="flex:1;">Saved</span></a>
+        <a href="People.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:{{dir.color}};background:{{dir.bg}};font-weight:{{dir.weight}};"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg><span style="flex:1;">Directories</span></a>
+      </nav>
+    </sc-if>
+    <!-- Shortcuts: Classic layout (adds the views the rail would hold) -->
+    <sc-if value="{{classic}}" hint-placeholder-val="{{false}}">
+      <nav aria-label="Shortcuts" style="display:grid;padding:0 8px 2px;">
+        <a href="Later.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"/></svg><span style="flex:1;">Saved</span></a>
+        <a href="Activity.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:var(--sb-strong,#fff);font-weight:700;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg><span style="flex:1;">Activity</span><span style="margin-left:auto;font-size:12px;">3</span></a>
+        <a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M7 11h10"/><path d="M7 15h6"/><path d="M7 7h8"/></svg><span style="flex:1;">Threads</span></a>
+        <a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg><span style="flex:1;">All unreads</span></a>
+        <a href="Files.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span style="flex:1;">Files</span></a>
+        <a href="People.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:{{dir.color}};background:{{dir.bg}};font-weight:{{dir.weight}};"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg><span style="flex:1;">Directories</span></a>
+        <a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg><span style="flex:1;">Meet</span></a>
+        <a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg><span style="flex:1;">Drafts</span></a>
+      </nav>
+    </sc-if>
+
+    <!-- Starred -->
+    <section style="padding:4px 0 0;">
+      <div style="display:flex;align-items:center;gap:8px;height:28px;padding:0 16px;font-size:14px;font-weight:500;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>Starred</div>
+      <ul style="list-style:none;margin:0;padding:0 8px;">
+        <li><a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:var(--sb-strong,#fff);font-weight:700;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">du-an-alpha</span><span style="min-width:16px;height:16px;padding:0 5px;box-sizing:border-box;border-radius:9px;background:var(--badge,#E11D48);color:#fff;font-size:10px;font-weight:700;display:inline-grid;place-items:center;">1</span></a></li>
+      </ul>
+    </section>
+    <!-- Channels -->
+    <section style="padding:4px 0 0;">
+      <div style="display:flex;align-items:center;gap:8px;height:28px;padding:0 16px;font-size:14px;font-weight:500;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></svg>Channels</div>
+      <ul style="list-style:none;margin:0;padding:0 8px;">
+        <sc-for list="{{channels}}" as="c" hint-placeholder-count="3">
+          <li><a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:{{c.color}};background:{{c.bg}};font-weight:{{c.weight}};"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.85;"><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></svg><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{c.name}}</span><sc-if value="{{c.badge}}" hint-placeholder-val="{{false}}"><span style="min-width:16px;height:16px;padding:0 5px;box-sizing:border-box;border-radius:9px;background:var(--badge,#E11D48);color:#fff;font-size:10px;font-weight:700;display:inline-grid;place-items:center;">{{c.badge}}</span></sc-if></a></li>
+        </sc-for>
+      </ul>
+      <a href="Channels.dc.html" style="display:block;margin:2px 16px;font-size:13px;font-weight:600;color:var(--sb-ink,#C9CAE6);opacity:.8;text-decoration:none;">Browse channels</a>
+    </section>
+    <!-- Direct messages -->
+    <section style="padding:4px 0 0;">
+      <div style="display:flex;align-items:center;gap:8px;height:28px;padding:0 16px;font-size:14px;font-weight:500;color:rgba(196,211,208,.82);"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>Direct messages</div>
+      <ul style="list-style:none;margin:0;padding:0 8px;">
+        <sc-for list="{{dms}}" as="d" hint-placeholder-count="4">
+          <li><a href="Main.dc.html" style="display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;font-size:14px;line-height:1.2;text-decoration:none;color:{{d.color}};font-weight:{{d.weight}};"><span style="position:relative;width:18px;height:18px;margin:0 -1px;border-radius:5px;display:inline-grid;place-items:center;font-size:8px;font-weight:700;color:#fff;background:{{d.avatar}};flex:none;" aria-hidden="true">{{d.ini}}<sc-if value="{{d.online}}" hint-placeholder-val="{{false}}"><span style="position:absolute;right:-3px;bottom:-3px;width:7px;height:7px;border-radius:50%;background:#5DD3A0;border:1.5px solid var(--sb,#161622);box-sizing:border-box;"></span></sc-if></span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{d.name}}</span><sc-if value="{{d.badge}}" hint-placeholder-val="{{false}}"><span style="min-width:16px;height:16px;padding:0 5px;box-sizing:border-box;border-radius:9px;background:var(--badge,#E11D48);color:#fff;font-size:10px;font-weight:700;display:inline-grid;place-items:center;">{{d.badge}}</span></sc-if></a></li>
+        </sc-for>
+      </ul>
+    </section>
+  </div>
+</aside>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":null,"default":"general"},"layout":{"editor":null,"default":"rail"},"w":{"editor":null,"default":"280"},"h":{"editor":null,"default":"900"},"$preview":{"width":280,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active ?? 'general';
+    const layout = this.props.layout ?? 'rail';
+    const on = { bg: '#4B4FD8', color: '#ffffff', weight: 600 };
+    const off = { bg: 'transparent', color: 'rgba(196,211,208,.82)', weight: 400 };
+    const unread = { bg: 'transparent', color: '#ffffff', weight: 700 };
+    // Channels: unread = bold white + badge; the open one gets the teal highlight.
+    const channels = [
+      { name: 'general', key: 'general', badge: '' },
+      { name: 'design', key: 'design', badge: '2', unread: true },
+      { name: 'releases', key: 'releases', badge: '' },
+    ].map((c) => ({ ...c, ...(c.key === active ? on : c.unread ? unread : off) }));
+    const dms = [
+      { name: 'Bob Trần', ini: 'BT', hue: 215, online: true, badge: '' },
+      { name: 'Chi Lê', ini: 'CL', hue: 335, online: false, badge: '2', unread: true },
+      { name: 'Dũng Phạm', ini: 'DP', hue: 22, online: true, badge: '' },
+      { name: 'Hà Võ', ini: 'HV', hue: 285, online: false, badge: '' },
+    ].map((d) => ({ ...d, avatar: 'hsl(' + d.hue + ' 45% 42%)', color: d.unread ? '#ffffff' : 'rgba(196,211,208,.82)', weight: d.unread ? 700 : 400 }));
+    return {
+      width: (this.props.w ?? '280') + 'px',
+      height: (this.props.h ?? '900') + 'px',
+      rail: layout !== 'classic',
+      classic: layout === 'classic',
+      dir: active === 'directories' ? on : off,
+      channels,
+      dms,
+    };
+  }
+}
+</script>
+</body>
+</html>

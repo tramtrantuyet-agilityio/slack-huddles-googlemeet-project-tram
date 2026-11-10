@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toki · Icon rail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<!-- Toki's icon rail (54px wide). Colours come from the CSS variables set by the screen that imports it. -->
+<nav aria-label="Views" style="width:54px;height:{{height}};box-sizing:border-box;background:var(--rail,#0E0E18);color:var(--rail-ink,#D9DAF0);font-family:var(--font,'Inter','Segoe UI',system-ui,sans-serif);display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;overflow:hidden;">
+  <sc-if value="{{phone}}" hint-placeholder-val="{{false}}">
+    <a href="PhoneList.dc.html" aria-label="Show the side panel" style="flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--rail-ink,#D9DAF0);text-decoration:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg></a>
+  </sc-if>
+  <button type="button" aria-label="Acme · Switch workspace" style="flex:none;width:36px;height:36px;margin-bottom:8px;border:0;border-radius:9px;background:#3C3E7A;color:#fff;font:700 13px var(--font,'Inter',sans-serif);">AC</button>
+
+  <a href="Main.dc.html" style="flex:none;width:50px;display:grid;justify-items:center;gap:2px;padding:3px 0;color:{{home.color}};font:600 10px/1.2 var(--font,'Inter',sans-serif);text-decoration:none;">
+    <span style="position:relative;width:38px;height:32px;border-radius:9px;display:grid;place-items:center;background:{{home.bg}};"><svg viewBox="0 0 24 24" width="20" height="20" fill="{{home.fill}}" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+    <span>Home</span>
+  </a>
+  <a href="DMs.dc.html" style="flex:none;width:50px;display:grid;justify-items:center;gap:2px;padding:3px 0;color:{{dms.color}};font:600 10px/1.2 var(--font,'Inter',sans-serif);text-decoration:none;">
+    <span style="position:relative;width:38px;height:32px;border-radius:9px;display:grid;place-items:center;background:{{dms.bg}};"><svg viewBox="0 0 24 24" width="20" height="20" fill="{{dms.fill}}" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/><path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1"/></svg><span style="position:absolute;top:-4px;right:-7px;min-width:20px;height:20px;box-sizing:border-box;padding:0 5px;border-radius:10px;border:2px solid var(--rail,#0E0E18);background:var(--badge,#E11D48);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;">2</span></span>
+    <span>DMs</span>
+  </a>
+  <a href="Activity.dc.html" style="flex:none;width:50px;display:grid;justify-items:center;gap:2px;padding:3px 0;color:{{activity.color}};font:600 10px/1.2 var(--font,'Inter',sans-serif);text-decoration:none;">
+    <span style="position:relative;width:38px;height:32px;border-radius:9px;display:grid;place-items:center;background:{{activity.bg}};"><svg viewBox="0 0 24 24" width="20" height="20" fill="{{activity.fill}}" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg><span style="position:absolute;top:-4px;right:-7px;min-width:20px;height:20px;box-sizing:border-box;padding:0 5px;border-radius:10px;border:2px solid var(--rail,#0E0E18);background:var(--badge,#E11D48);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;">3</span></span>
+    <span>Activity</span>
+  </a>
+  <a href="Files.dc.html" style="flex:none;width:50px;display:grid;justify-items:center;gap:2px;padding:3px 0;color:{{files.color}};font:600 10px/1.2 var(--font,'Inter',sans-serif);text-decoration:none;">
+    <span style="position:relative;width:38px;height:32px;border-radius:9px;display:grid;place-items:center;background:{{files.bg}};"><svg viewBox="0 0 24 24" width="20" height="20" fill="{{files.fill}}" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg></span>
+    <span>Files</span>
+  </a>
+  <a href="Later.dc.html" style="flex:none;width:50px;display:grid;justify-items:center;gap:2px;padding:3px 0;color:{{later.color}};font:600 10px/1.2 var(--font,'Inter',sans-serif);text-decoration:none;">
+    <span style="position:relative;width:38px;height:32px;border-radius:9px;display:grid;place-items:center;background:{{later.bg}};"><svg viewBox="0 0 24 24" width="20" height="20" fill="{{later.fill}}" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"/></svg></span>
+    <span>Later</span>
+  </a>
+  <button type="button" aria-label="More" aria-haspopup="menu" style="flex:none;width:50px;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:3px 0;color:var(--rail-ink,#D9DAF0);font:600 10px/1.2 var(--font,'Inter',sans-serif);">
+    <span style="width:38px;height:32px;border-radius:9px;display:grid;place-items:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></span>
+    <span>More</span>
+  </button>
+  <a href="Admin.dc.html" style="flex:none;width:50px;display:grid;justify-items:center;gap:2px;padding:3px 0;color:{{admin.color}};font:600 10px/1.2 var(--font,'Inter',sans-serif);text-decoration:none;">
+    <span style="position:relative;width:38px;height:32px;border-radius:9px;display:grid;place-items:center;background:{{admin.bg}};"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
+    <span>Admin</span>
+  </a>
+
+  <div style="flex:1;"></div>
+  <button type="button" aria-label="Create" aria-haspopup="menu" style="flex:none;width:36px;height:36px;border:0;border-radius:50%;background:none;color:var(--rail-ink,#D9DAF0);display:grid;place-items:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+  <button type="button" aria-label="Switch to light mode" style="flex:none;width:36px;height:36px;border:0;border-radius:50%;background:none;color:var(--rail-ink,#D9DAF0);display:grid;place-items:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button>
+  <a href="Profile.dc.html" aria-label="Alice Nguyễn" style="flex:none;width:36px;height:36px;border-radius:8px;display:inline-grid;place-items:center;font-size:13px;font-weight:700;color:#fff;background:hsl(262 45% 42%);text-decoration:none;">AN</a>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":null,"default":"home"},"phone":{"editor":null,"default":"no"},"h":{"editor":null,"default":"900"},"$preview":{"width":54,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active ?? 'home';
+    const tab = (id) => {
+      const on = active === id;
+      return { color: on ? '#ffffff' : 'var(--rail-ink,#D9DAF0)', bg: on ? 'rgba(217,218,240,.24)' : 'transparent', fill: on ? 'currentColor' : 'none' };
+    };
+    return {
+      height: (this.props.h ?? '900') + 'px',
+      phone: (this.props.phone ?? 'no') === 'yes',
+      home: tab('home'), dms: tab('dms'), activity: tab('activity'), files: tab('files'), later: tab('later'), admin: tab('admin'),
+    };
+  }
+}
+</script>
+</body>
+</html>

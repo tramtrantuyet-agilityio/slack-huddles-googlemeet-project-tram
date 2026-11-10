@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toki · Activity</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="{{vars}}width:1440px;height:900px;position:relative;overflow:hidden;display:flex;background:var(--rail);color:var(--ink);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased;">
+  <div style="width:54px;height:900px;flex:none;">
+    <dc-import name="Rail" active="activity" hint-size="54px,900px"></dc-import>
+  </div>
+  <section style="width:1386px;height:900px;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:var(--sf);border-left:1px solid var(--ru);border-top-left-radius:10px;overflow:hidden;">
+    <header style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 20px;border-bottom:1px solid var(--ru);min-height:52px;box-sizing:border-box;">
+      <h1 style="margin:0;font-size:17px;font-weight:700;">Activity</h1>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13.6px;font-weight:500;color:var(--mu);margin-right:6px;"><input type="checkbox" style="margin:0;accent-color:var(--ac);">Unread only</label>
+        <button type="button" style="border:1px solid var(--ru);border-radius:6px;padding:2px 10px;min-height:28px;font:600 13px var(--font);color:var(--ink);background:none;cursor:pointer;">Mark all as read</button>
+        <a href="Main.dc.html" aria-label="Close" style="width:28px;height:28px;border-radius:6px;display:inline-grid;place-items:center;color:var(--ink);text-decoration:none;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></a>
+      </div>
+    </header>
+    <nav aria-label="Filter" style="display:flex;gap:4px;padding:8px 20px 0;border-bottom:1px solid var(--ru);">
+      <button type="button" style="padding:6px 12px;border:0;border-bottom:2px solid var(--ac);background:none;color:var(--ink);font:600 15px var(--font);">All</button>
+      <button type="button" style="padding:6px 12px;border:0;border-bottom:2px solid transparent;background:none;color:var(--mu);font:600 15px var(--font);">Direct messages</button>
+      <button type="button" style="padding:6px 12px;border:0;border-bottom:2px solid transparent;background:none;color:var(--mu);font:600 15px var(--font);">Mentions</button>
+      <button type="button" style="padding:6px 12px;border:0;border-bottom:2px solid transparent;background:none;color:var(--mu);font:600 15px var(--font);">Threads</button>
+      <button type="button" style="padding:6px 12px;border:0;border-bottom:2px solid transparent;background:none;color:var(--mu);font:600 15px var(--font);">Reactions</button>
+    </nav>
+    <ul style="list-style:none;margin:0;padding:4px 0;flex:1;min-height:0;overflow:hidden;">
+      <sc-for list="{{items}}" as="a" hint-placeholder-count="6">
+        <li style="border-bottom:1px solid var(--ru);">
+          <a href="{{a.href}}" style="display:grid;gap:4px;padding:10px 20px;text-decoration:none;color:var(--ink);">
+            <span style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:var(--mu);">
+              <span style="width:20px;height:20px;border-radius:5px;display:inline-grid;place-items:center;font-size:9px;font-weight:700;color:#fff;background:{{a.avatar}};" aria-hidden="true">{{a.ini}}</span>
+              <span style="font-weight:700;color:var(--ink);font-size:14px;">{{a.what}}</span>
+              <span style="font-weight:{{a.weight}};">{{a.place}}</span>
+              <time>{{a.time}}</time>
+            </span>
+            <span style="white-space:pre-wrap;overflow-wrap:anywhere;">{{a.snippet}}</span>
+          </a>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.theme ?? 'dark') === 'dark';
+    const common = "--rail-ink:#D9DAF0;--sb-ink:#C9CAE6;--sb-strong:#ffffff;--sb-active:#4B4FD8;--badge:#E11D48;--focus:#6B6EF0;--font:'Inter','Segoe UI',system-ui,-apple-system,'Noto Sans',sans-serif;--mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;";
+    const darkT = "--bg:#12121C;--sf:#1B1B29;--sf2:#22223A;--rail:#0E0E18;--sb:#161622;--sbh:#22223A;--ink:#E9E9F6;--mu:#9A9AB5;--ru:#2D2D42;--ac:#8B8EF5;--aci:#12122A;--acs:#25264A;--men:#443214;--meni:#F0C47A;--dg:#F08196;";
+    const lightT = "--bg:#F5F5FA;--sf:#ffffff;--sf2:#EEEEF6;--rail:#1B1B2F;--sb:#232340;--sbh:#2E2E52;--ink:#1B1B2F;--mu:#66667F;--ru:#E2E2EE;--ac:#4B4FD8;--aci:#ffffff;--acs:#E9E9FC;--men:#FBEFD5;--meni:#9A6212;--dg:#B8344A;";
+    // Activity feed. unread rows get a bold place name.
+    const feed = [
+      { who: 'Chi Lê', ini: 'CL', hue: 335, what: 'Chi Lê mentioned you', place: '#du-an-alpha', time: '10:15', snippet: '@Alice Nguyễn bạn xem giúp phần kiểm thử trước thứ Sáu nhé', unread: true, href: 'Main.dc.html' },
+      { who: 'Bob Trần', ini: 'BT', hue: 215, what: 'Bob Trần replied in a thread', place: '#general', time: '09:20', snippet: 'OK, dời sang 14:30 có tiện không? Mình có buổi review lúc 13:30.', unread: true, href: 'Thread.dc.html' },
+      { who: 'Hà Võ', ini: 'HV', hue: 285, what: 'Hà Võ reacted 👍', place: '#design', time: '09:05', snippet: 'Mình đã cập nhật tài liệu thiết kế, mọi người xem giúp nhé.', unread: false, href: 'Main.dc.html' },
+      { who: 'Dũng Phạm', ini: 'DP', hue: 22, what: 'Dũng Phạm sent you a message', place: 'Dũng Phạm', time: 'Yesterday', snippet: 'Ok, mình sẽ review PR trước chiều nay', unread: false, href: 'DMs.dc.html' },
+      { who: 'Dũng Phạm', ini: 'DP', hue: 22, what: 'Dũng Phạm used one of your keywords', place: '#releases', time: 'Yesterday', snippet: 'Bản phát hành 1.4 sẽ deploy tối nay, ai cần kiểm tra thêm báo mình.', unread: false, href: 'Main.dc.html' },
+      { who: 'Reminder', ini: 'AN', hue: 215, what: 'Reminder', place: 'Alice Nguyễn', time: 'Mon', snippet: 'Gửi báo cáo tuần cho Bob', unread: false, href: 'Later.dc.html' },
+    ];
+    const items = feed.map((f) => ({ ...f, weight: f.unread ? 700 : 400, avatar: 'hsl(' + f.hue + ' 45% 42%)' }));
+    return { vars: common + (dark ? darkT : lightT), items };
+  }
+}
+</script>
+</body>
+</html>

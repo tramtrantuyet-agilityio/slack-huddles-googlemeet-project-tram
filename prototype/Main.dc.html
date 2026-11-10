@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toki · Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="{{vars}}width:1440px;height:900px;position:relative;overflow:hidden;display:flex;background:var(--sb);color:var(--ink);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased;">
+  <div style="width:54px;height:900px;flex:none;">
+    <dc-import name="Rail" active="home" hint-size="54px,900px"></dc-import>
+  </div>
+  <div style="width:280px;height:900px;flex:none;">
+    <dc-import name="SidePanel" active="general" hint-size="280px,900px"></dc-import>
+  </div>
+  <div style="width:1106px;height:900px;flex:none;">
+    <dc-import name="Channel" w="1106" compact="no" hint-size="1106px,900px"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.theme ?? 'dark') === 'dark';
+    // Toki colour tokens (apps/web/style.css). Edit here; every part reads them as CSS variables.
+    const common = "--rail-ink:#D9DAF0;--sb-ink:#C9CAE6;--sb-strong:#ffffff;--sb-active:#4B4FD8;--badge:#E11D48;--focus:#6B6EF0;--font:'Inter','Segoe UI',system-ui,-apple-system,'Noto Sans',sans-serif;--mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;";
+    const darkT = "--bg:#12121C;--sf:#1B1B29;--sf2:#22223A;--rail:#0E0E18;--sb:#161622;--sbh:#22223A;--ink:#E9E9F6;--mu:#9A9AB5;--ru:#2D2D42;--ac:#8B8EF5;--aci:#12122A;--acs:#25264A;--men:#443214;--meni:#F0C47A;--dg:#F08196;";
+    const lightT = "--bg:#F5F5FA;--sf:#ffffff;--sf2:#EEEEF6;--rail:#1B1B2F;--sb:#232340;--sbh:#2E2E52;--ink:#1B1B2F;--mu:#66667F;--ru:#E2E2EE;--ac:#4B4FD8;--aci:#ffffff;--acs:#E9E9FC;--men:#FBEFD5;--meni:#9A6212;--dg:#B8344A;";
+    return { vars: common + (dark ? darkT : lightT) };
+  }
+}
+</script>
+</body>
+</html>

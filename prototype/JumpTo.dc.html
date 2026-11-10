@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toki · Jump to</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="{{vars}}width:1440px;height:900px;position:relative;overflow:hidden;display:flex;background:var(--sb);color:var(--ink);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased;">
+  <div style="width:54px;height:900px;flex:none;">
+    <dc-import name="Rail" active="home" hint-size="54px,900px"></dc-import>
+  </div>
+  <div style="width:280px;height:900px;flex:none;">
+    <dc-import name="SidePanel" active="general" hint-size="280px,900px"></dc-import>
+  </div>
+  <div style="width:1106px;height:900px;flex:none;">
+    <dc-import name="Channel" w="1106" compact="no" hint-size="1106px,900px"></dc-import>
+  </div>
+  <!-- Backdrop: click returns to Home -->
+  <a href="Main.dc.html" aria-label="Close" style="position:absolute;left:0;top:0;width:1440px;height:900px;background:rgba(15,15,30,.45);display:block;"></a>
+  <!-- Dialog -->
+  <div role="dialog" aria-label="Jump to…" style="position:absolute;left:460px;top:90px;width:520px;box-sizing:border-box;max-height:720px;overflow:hidden;background:var(--sf);color:var(--ink);border-radius:12px;padding:18px 20px 20px;display:grid;gap:14px;box-shadow:0 20px 50px rgba(0,0,0,.3);">
+    <header style="display:flex;justify-content:space-between;align-items:center;">
+      <h2 style="margin:0;font-size:18px;font-weight:700;">Jump to…</h2>
+      <a href="Main.dc.html" aria-label="Close" style="width:28px;height:28px;border-radius:6px;display:inline-grid;place-items:center;color:var(--ink);text-decoration:none;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></a>
+    </header>
+    <div style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid var(--ac);background:var(--sf);color:var(--mu);outline:2px solid var(--focus);outline-offset:2px;">Jump to…</div>
+    <ul style="list-style:none;margin:0;padding:0;display:grid;gap:2px;">
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+        <li>
+          <a href="Main.dc.html" style="width:100%;box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;text-decoration:none;color:var(--ink);background:{{r.bg}};"><span style="font-weight:600;">{{r.title}}</span></a>
+        </li>
+      </sc-for>
+    </ul>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.theme ?? 'dark') === 'dark';
+    const common = "--rail-ink:#D9DAF0;--sb-ink:#C9CAE6;--sb-strong:#ffffff;--sb-active:#4B4FD8;--badge:#E11D48;--focus:#6B6EF0;--font:'Inter','Segoe UI',system-ui,-apple-system,'Noto Sans',sans-serif;--mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;";
+    const darkT = "--bg:#12121C;--sf:#1B1B29;--sf2:#22223A;--rail:#0E0E18;--sb:#161622;--sbh:#22223A;--ink:#E9E9F6;--mu:#9A9AB5;--ru:#2D2D42;--ac:#8B8EF5;--aci:#12122A;--acs:#25264A;--men:#443214;--meni:#F0C47A;--dg:#F08196;";
+    const lightT = "--bg:#F5F5FA;--sf:#ffffff;--sf2:#EEEEF6;--rail:#1B1B2F;--sb:#232340;--sbh:#2E2E52;--ink:#1B1B2F;--mu:#66667F;--ru:#E2E2EE;--ac:#4B4FD8;--aci:#ffffff;--acs:#E9E9FC;--men:#FBEFD5;--meni:#9A6212;--dg:#B8344A;";
+    const titles = ['general', 'design', 'du-an-alpha', 'releases', 'Bob Trần', 'Chi Lê', 'Dũng Phạm', 'Hà Võ'];
+    const rows = titles.map((title, i) => ({ title, bg: i === 0 ? 'var(--acs)' : 'transparent' }));
+    return { vars: common + (dark ? darkT : lightT), rows };
+  }
+}
+</script>
+</body>
+</html>

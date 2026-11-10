@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toki · Admin console</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="{{vars}}width:1440px;height:900px;position:relative;overflow:hidden;display:flex;background:var(--sb);color:var(--ink);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased;">
+  <div style="width:54px;height:900px;flex:none;">
+    <dc-import name="Rail" active="admin" hint-size="54px,900px"></dc-import>
+  </div>
+  <div style="width:280px;height:900px;flex:none;">
+    <dc-import name="SidePanel" active="general" hint-size="280px,900px"></dc-import>
+  </div>
+  <div style="width:1106px;height:900px;flex:none;">
+    <dc-import name="Channel" w="1106" compact="no" hint-size="1106px,900px"></dc-import>
+  </div>
+  <a href="Main.dc.html" aria-label="Close" style="position:absolute;left:0;top:0;width:1440px;height:900px;background:rgba(15,15,30,.45);display:block;"></a>
+  <!-- Dialog -->
+  <div role="dialog" aria-label="Admin console" style="position:absolute;left:240px;top:90px;width:960px;height:720px;box-sizing:border-box;overflow:hidden;background:var(--sf);color:var(--ink);border-radius:12px;padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(0,0,0,.3);">
+    <header style="display:flex;justify-content:space-between;align-items:center;flex:none;">
+      <h2 style="margin:0;font-size:18px;font-weight:700;">Admin console</h2>
+      <a href="Main.dc.html" aria-label="Close" style="width:28px;height:28px;border-radius:6px;display:inline-grid;place-items:center;color:var(--ink);text-decoration:none;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></a>
+    </header>
+    <nav aria-label="Admin" style="display:flex;gap:4px;padding:0 0 0;border-bottom:1px solid var(--ru);flex:none;">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="6">
+        <button type="button" onClick="{{t.pick}}" style="padding:6px 12px;border:0;border-bottom:2px solid {{t.line}};background:none;color:{{t.color}};font:600 15px var(--font);cursor:pointer;white-space:nowrap;">{{t.label}}</button>
+      </sc-for>
+    </nav>
+    <div style="flex:1;min-height:0;overflow:hidden;display:grid;gap:10px;align-content:start;">
+      <!-- People -->
+      <sc-if value="{{isPeople}}" hint-placeholder-val="{{true}}">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr>
+            <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--ru);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);">Person</th>
+            <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--ru);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);">Role</th>
+            <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--ru);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);">Status</th>
+            <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--ru);"></th>
+          </tr></thead>
+          <tbody>
+            <sc-for list="{{users}}" as="u" hint-placeholder-count="6">
+              <tr style="opacity:{{u.opacity}};">
+                <td style="padding:6px 8px;border-bottom:1px solid var(--ru);vertical-align:top;"><div style="font-weight:700;">{{u.name}}</div><div style="color:var(--mu);font-size:12px;">{{u.email}}</div></td>
+                <td style="padding:6px 8px;border-bottom:1px solid var(--ru);vertical-align:top;"><select aria-label="Role" style="padding:4px 8px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:13px var(--font);"><option>{{u.role}}</option></select></td>
+                <td style="padding:6px 8px;border-bottom:1px solid var(--ru);vertical-align:top;">{{u.status}}</td>
+                <td style="padding:6px 8px;border-bottom:1px solid var(--ru);vertical-align:top;"><div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <button type="button" style="border:1px solid var(--ru);border-radius:6px;padding:5px 12px;font:600 13px var(--font);color:var(--ink);background:none;">{{u.action}}</button>
+                  <button type="button" style="border:1px solid var(--ru);border-radius:6px;padding:5px 12px;font:600 13px var(--font);color:var(--ink);background:none;">Sign out everywhere</button>
+                </div></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </sc-if>
+      <!-- Workspace -->
+      <sc-if value="{{isWorkspace}}" hint-placeholder-val="{{false}}">
+        <fieldset style="border:1px solid var(--ru);border-radius:8px;padding:10px 12px 12px;display:grid;gap:8px;margin:0;min-width:0;">
+          <legend style="font-weight:700;padding:0 4px;">Link previews</legend>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:500;"><input type="checkbox" checked style="margin:0;accent-color:var(--ac);">Show link previews in messages</label>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:500;"><input type="checkbox" checked style="margin:0;accent-color:var(--ac);">Show images in link previews</label>
+          <label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--mu);">Blocked domains<textarea rows="3" placeholder="example.com" style="width:100%;box-sizing:border-box;font:13px var(--mono);padding:6px;border:1px solid var(--ru);border-radius:6px;background:var(--sf);color:var(--ink);"></textarea></label>
+          <p style="margin:0;font-size:13px;color:var(--mu);">One domain per line. Links to these domains (and their subdomains) never get a preview.</p>
+        </fieldset>
+        <fieldset style="border:1px solid var(--ru);border-radius:8px;padding:10px 12px 12px;display:grid;gap:8px;margin:0;min-width:0;">
+          <legend style="font-weight:700;padding:0 4px;">Permissions</legend>
+          <label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--mu);">Who can create channels<select style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:15px var(--font);"><option>Everyone except guests</option></select></label>
+          <label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--mu);">Who can use @channel, @here and @everyone<select style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:15px var(--font);"><option>Everyone except guests</option></select></label>
+          <label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--mu);">People can edit their messages for<select style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:15px var(--font);"><option>No limit</option></select></label>
+        </fieldset>
+      </sc-if>
+      <!-- Audit log -->
+      <sc-if value="{{isAudit}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;">
+          <input type="text" placeholder="Filter by action, e.g. role" aria-label="Filter by action" style="padding:8px 10px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:15px var(--font);width:260px;">
+          <a href="#" style="display:inline-flex;align-items:center;min-height:34px;padding:7px 14px;box-sizing:border-box;border:1px solid var(--ru);border-radius:6px;font-weight:600;color:var(--ink);text-decoration:none;">CSV</a>
+          <a href="#" style="display:inline-flex;align-items:center;min-height:34px;padding:7px 14px;box-sizing:border-box;border:1px solid var(--ru);border-radius:6px;font-weight:600;color:var(--ink);text-decoration:none;">JSONL</a>
+        </div>
+        <p style="margin:0;font-size:13px;color:var(--mu);">The log's hash chain is intact.</p>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;"><tbody>
+          <sc-for list="{{audit}}" as="a" hint-placeholder-count="5">
+            <tr><td style="padding:6px 8px;border-bottom:1px solid var(--ru);white-space:nowrap;">{{a.at}}</td><td style="padding:6px 8px;border-bottom:1px solid var(--ru);">{{a.who}}</td><td style="padding:6px 8px;border-bottom:1px solid var(--ru);"><code style="font:12px var(--mono);">{{a.action}}</code></td><td style="padding:6px 8px;border-bottom:1px solid var(--ru);color:var(--mu);">{{a.detail}}</td></tr>
+          </sc-for>
+        </tbody></table>
+      </sc-if>
+      <!-- Retention -->
+      <sc-if value="{{isRetention}}" hint-placeholder-val="{{false}}">
+        <p style="margin:0;font-size:13px;color:var(--mu);">Messages older than the limit are deleted every night.</p>
+        <div style="font-size:13px;">Organization-wide limit: Keep forever</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;">
+          <label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--mu);">Organization-wide limit (days)<input type="number" placeholder="Keep forever" style="padding:8px 10px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:15px var(--font);width:200px;"></label>
+          <button type="button" style="min-height:34px;padding:7px 14px;border:0;border-radius:6px;background:var(--ac);color:var(--aci);font:600 15px var(--font);">Save</button>
+          <button type="button" style="min-height:34px;padding:7px 14px;border:1px solid var(--ru);border-radius:6px;background:none;color:var(--ink);font:600 15px var(--font);">Run now</button>
+        </div>
+      </sc-if>
+      <!-- Legal holds -->
+      <sc-if value="{{isHolds}}" hint-placeholder-val="{{false}}">
+        <p style="margin:0;font-size:13px;color:var(--mu);">While a hold is active, retention is suspended.</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:6px;">
+          <div><div style="font-weight:600;"><code style="font:13px var(--mono);">conversation</code> #du-an-alpha</div><div style="font-size:13px;color:var(--mu);">Kiểm toán nội bộ Q4</div></div>
+          <button type="button" style="border:1px solid var(--ru);border-radius:6px;padding:7px 14px;font:600 15px var(--font);color:var(--ink);background:none;">Release</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;">
+          <select aria-label="Hold on" style="padding:8px 10px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:15px var(--font);"><option>Conversation</option></select>
+          <input type="text" placeholder="Note" aria-label="Note" style="padding:8px 10px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:15px var(--font);width:260px;">
+          <button type="button" style="min-height:34px;padding:7px 14px;border:0;border-radius:6px;background:var(--ac);color:var(--aci);font:600 15px var(--font);">Add hold</button>
+        </div>
+      </sc-if>
+      <!-- Export -->
+      <sc-if value="{{isExport}}" hint-placeholder-val="{{false}}">
+        <p style="margin:0;font-size:13px;color:var(--mu);">Exports are zip files with one JSON Lines file per conversation and a file manifest.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;">
+          <button type="button" style="min-height:34px;padding:7px 14px;border:1px solid var(--ru);border-radius:6px;background:none;color:var(--ink);font:600 15px var(--font);">Export public channels</button>
+          <button type="button" style="min-height:34px;padding:7px 14px;border:1px solid var(--ru);border-radius:6px;background:none;color:var(--ink);font:600 15px var(--font);">Export everything (owners)</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;">
+          <div><div style="font-weight:600;">public · done</div><div style="font-size:13px;color:var(--mu);">Today 08:30 · 4 conversations</div></div>
+          <a href="#" style="display:inline-flex;align-items:center;min-height:34px;padding:7px 14px;box-sizing:border-box;border:1px solid var(--ru);border-radius:6px;font-weight:600;color:var(--ink);text-decoration:none;">Download</a>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.theme ?? 'dark') === 'dark';
+    const common = "--rail-ink:#D9DAF0;--sb-ink:#C9CAE6;--sb-strong:#ffffff;--sb-active:#4B4FD8;--badge:#E11D48;--focus:#6B6EF0;--font:'Inter','Segoe UI',system-ui,-apple-system,'Noto Sans',sans-serif;--mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;";
+    const darkT = "--bg:#12121C;--sf:#1B1B29;--sf2:#22223A;--rail:#0E0E18;--sb:#161622;--sbh:#22223A;--ink:#E9E9F6;--mu:#9A9AB5;--ru:#2D2D42;--ac:#8B8EF5;--aci:#12122A;--acs:#25264A;--men:#443214;--meni:#F0C47A;--dg:#F08196;";
+    const lightT = "--bg:#F5F5FA;--sf:#ffffff;--sf2:#EEEEF6;--rail:#1B1B2F;--sb:#232340;--sbh:#2E2E52;--ink:#1B1B2F;--mu:#66667F;--ru:#E2E2EE;--ac:#4B4FD8;--aci:#ffffff;--acs:#E9E9FC;--men:#FBEFD5;--meni:#9A6212;--dg:#B8344A;";
+    const cur = (this.state && this.state.tab) || 'people';
+    const defs = [['workspace', 'Workspace'], ['people', 'People'], ['audit', 'Audit log'], ['retention', 'Retention'], ['holds', 'Legal holds'], ['export', 'Export']];
+    const tabs = defs.map(([id, label]) => ({
+      label,
+      pick: () => this.setState({ tab: id }),
+      line: cur === id ? 'var(--ac)' : 'transparent',
+      color: cur === id ? 'var(--ink)' : 'var(--mu)',
+    }));
+    const u = [
+      { name: 'Alice Nguyễn', email: 'alice@acme.vn', role: 'owner', active: true },
+      { name: 'Bob Trần', email: 'bob.tran@acme.vn', role: 'member', active: true },
+      { name: 'Chi Lê', email: 'chi.le@acme.vn', role: 'member', active: true },
+      { name: 'Dũng Phạm', email: 'dung.pham@acme.vn', role: 'admin', active: true },
+      { name: 'Hà Võ', email: 'ha.vo@acme.vn', role: 'member', active: true },
+      { name: 'Khách Mời', email: 'khach@partner.vn', role: 'guest', active: false },
+    ];
+    const users = u.map((x) => ({ ...x, status: x.active ? 'Active' : 'Deactivated', action: x.active ? 'Deactivate' : 'Reactivate', opacity: x.active ? 1 : 0.55 }));
+    const audit = [
+      { at: 'Today 09:12', who: 'Alice Nguyễn', action: 'role.change', detail: 'Dũng Phạm: member → admin' },
+      { at: 'Yesterday 17:40', who: 'Dũng Phạm', action: 'channel.create', detail: '#releases' },
+      { at: 'Yesterday 10:05', who: 'Alice Nguyễn', action: 'invite.create', detail: 'guest · #du-an-alpha' },
+      { at: 'Mon 08:58', who: 'Alice Nguyễn', action: 'user.deactivate', detail: 'Khách Mời' },
+    ];
+    return { vars: common + (dark ? darkT : lightT), tabs, users, audit, isWorkspace: cur === 'workspace', isPeople: cur === 'people', isAudit: cur === 'audit', isRetention: cur === 'retention', isHolds: cur === 'holds', isExport: cur === 'export' };
+  }
+}
+</script>
+</body>
+</html>

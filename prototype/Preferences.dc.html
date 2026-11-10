@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toki · Preferences</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="{{vars}}width:1440px;height:900px;position:relative;overflow:hidden;display:flex;background:var(--sb);color:var(--ink);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased;">
+  <div style="width:54px;height:900px;flex:none;">
+    <dc-import name="Rail" active="home" hint-size="54px,900px"></dc-import>
+  </div>
+  <div style="width:280px;height:900px;flex:none;">
+    <dc-import name="SidePanel" active="general" hint-size="280px,900px"></dc-import>
+  </div>
+  <div style="width:1106px;height:900px;flex:none;">
+    <dc-import name="Channel" w="1106" compact="no" hint-size="1106px,900px"></dc-import>
+  </div>
+  <a href="Main.dc.html" aria-label="Close" style="position:absolute;left:0;top:0;width:1440px;height:900px;background:rgba(15,15,30,.45);display:block;"></a>
+  <!-- Dialog -->
+  <div role="dialog" aria-label="Settings" style="position:absolute;left:290px;top:90px;width:860px;height:680px;box-sizing:border-box;overflow:hidden;background:var(--sf);color:var(--ink);border-radius:12px;padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(0,0,0,.3);">
+    <header style="display:flex;justify-content:space-between;align-items:center;flex:none;">
+      <h2 style="margin:0;font-size:18px;font-weight:700;">Settings</h2>
+      <a href="Main.dc.html" aria-label="Close" style="width:28px;height:28px;border-radius:6px;display:inline-grid;place-items:center;color:var(--ink);text-decoration:none;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></a>
+    </header>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:190px minmax(0,1fr);gap:20px;">
+      <nav aria-label="Settings" style="display:grid;gap:2px;align-content:start;">
+        <sc-for list="{{tabs}}" as="t" hint-placeholder-count="13">
+          <button type="button" onClick="{{t.pick}}" style="border:0;background:{{t.bg}};text-align:left;padding:7px 10px;border-radius:6px;color:{{t.color}};font:{{t.weight}} 15px var(--font);cursor:pointer;">{{t.label}}</button>
+        </sc-for>
+      </nav>
+      <div style="display:grid;gap:16px;align-content:start;overflow:hidden;min-width:0;">
+        <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+          <fieldset style="border:1px solid var(--ru);border-radius:8px;padding:10px 12px 12px;display:grid;gap:8px;margin:0;min-width:0;">
+            <legend style="font-weight:700;padding:0 4px;">{{g.legend}}</legend>
+            <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="3">
+              <div style="display:grid;gap:8px;">
+                <sc-if value="{{r.isHint}}" hint-placeholder-val="{{false}}">
+                  <p style="margin:0;font-size:13px;color:var(--mu);">{{r.text}}</p>
+                </sc-if>
+                <sc-if value="{{r.isCheck}}" hint-placeholder-val="{{false}}">
+                  <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--mu);"><input type="checkbox" checked="{{r.on}}" style="margin:0;accent-color:var(--ac);"><span style="font-weight:500;color:var(--ink);font-size:15px;">{{r.text}}</span></label>
+                </sc-if>
+                <sc-if value="{{r.isSelect}}" hint-placeholder-val="{{false}}">
+                  <label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--mu);">{{r.text}}<select style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:15px var(--font);"><option>{{r.value}}</option></select></label>
+                </sc-if>
+                <sc-if value="{{r.isInput}}" hint-placeholder-val="{{false}}">
+                  <label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--mu);">{{r.text}}<input type="text" placeholder="{{r.placeholder}}" value="{{r.value}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid var(--ru);background:var(--sf);color:var(--ink);font:15px var(--font);"></label>
+                </sc-if>
+                <sc-if value="{{r.isButtons}}" hint-placeholder-val="{{false}}">
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                    <sc-for list="{{r.buttons}}" as="b" hint-placeholder-count="3">
+                      <button type="button" style="border:1px solid {{b.border}};border-radius:6px;padding:7px 14px;min-height:34px;font:600 15px var(--font);color:{{b.color}};background:{{b.bg}};">{{b.label}}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </fieldset>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.theme ?? 'dark') === 'dark';
+    const common = "--rail-ink:#D9DAF0;--sb-ink:#C9CAE6;--sb-strong:#ffffff;--sb-active:#4B4FD8;--badge:#E11D48;--focus:#6B6EF0;--font:'Inter','Segoe UI',system-ui,-apple-system,'Noto Sans',sans-serif;--mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;";
+    const darkT = "--bg:#12121C;--sf:#1B1B29;--sf2:#22223A;--rail:#0E0E18;--sb:#161622;--sbh:#22223A;--ink:#E9E9F6;--mu:#9A9AB5;--ru:#2D2D42;--ac:#8B8EF5;--aci:#12122A;--acs:#25264A;--men:#443214;--meni:#F0C47A;--dg:#F08196;";
+    const lightT = "--bg:#F5F5FA;--sf:#ffffff;--sf2:#EEEEF6;--rail:#1B1B2F;--sb:#232340;--sbh:#2E2E52;--ink:#1B1B2F;--mu:#66667F;--ru:#E2E2EE;--ac:#4B4FD8;--aci:#ffffff;--acs:#E9E9FC;--men:#FBEFD5;--meni:#9A6212;--dg:#B8344A;";
+
+    // Row helpers: hint, check, select, input, buttons.
+    const hint = (text) => ({ kind: 'hint', text });
+    const check = (text, on) => ({ kind: 'check', text, on: !!on });
+    const select = (text, value) => ({ kind: 'select', text, value });
+    const input = (text, value, placeholder) => ({ kind: 'input', text, value: value || '', placeholder: placeholder || '' });
+    const buttons = (...labels) => ({ kind: 'buttons', labels });
+
+    // Settings tabs, in Toki's order, with the copy from the English strings.
+    const TABS = [
+      { id: 'profile', label: 'Profile & status', groups: [
+        { legend: 'Profile', rows: [buttons('Upload photo'), input('Display name', 'Alice Nguyễn'), input('Full name', 'Nguyễn Thị Alice'), input('Title', 'Product Manager'), input('Pronouns', ''), input('Phone', '+84 90 123 4567'), select('Time zone', 'Asia/Ho_Chi_Minh'), buttons('*Save')] },
+        { legend: 'Status', rows: [input('', '', "What's your status?"), select('', "Don't clear"), buttons('Clear', '*Save')] },
+      ] },
+      { id: 'notifications', label: 'Notifications', groups: [
+        { legend: 'Do not disturb', rows: [hint('Notifications are on.'), buttons('30 minutes', '1 hour', '2 hours', 'Resume'), hint('Notifications also pause outside your working hours (see Availability)')] },
+        { legend: 'What notifies me', rows: [select('Channels notify me about', 'Mentions and threads I follow'), input('My keywords', '', 'e.g. deploy, release, Hà Nội'), check('Replies in threads I follow', true), check('When Meet starts in my channels and direct messages', true), check("Let VIP messages through while notifications are paused or I'm outside working hours", false), check('Set yourself as away', false)] },
+        { legend: 'Activity', rows: [hint('Mentions, thread replies and reactions always show in Activity. Also show:'), check('Direct messages', true), check('New posts in channels set to all new messages', false), check('Reminders', true)] },
+        { legend: 'Reminders', rows: [select('Time for "tomorrow" and "next week" reminders', '9:00')] },
+        { legend: 'How notifications reach me', rows: [hint('Desktop notifications are on.'), check('Hide message text in notifications', false), check('Email me about missed mentions and direct messages', false), select("When I'm active on a computer, wait before notifying my phone", '2 minutes')] },
+      ] },
+      { id: 'availability', label: 'Availability', groups: [
+        { legend: 'Working hours', rows: [hint('Toki only notifies you during your working hours, in your own time zone.'), check('Only notify me during working hours', true), select('Days', 'Weekdays')] },
+      ] },
+      { id: 'vips', label: 'VIPs', groups: [
+        { legend: 'VIPs', rows: [hint('Your most important people. Their messages can reach you even while notifications are paused.'), hint('Nobody yet.'), input('', '', 'Add someone…')] },
+        { legend: 'Hidden people', rows: [hint('You get no notifications from people you hide.'), hint('Nobody yet.')] },
+      ] },
+      { id: 'sidebar', label: 'Sidebar', groups: [
+        { legend: 'Showing and sorting', rows: [select('Show', 'All conversations'), select('Sort', 'A to Z'), check('Hide muted conversations (they come back when someone mentions you)', false), check('Move conversations with unread mentions to the top of their section', true), check('List people who are online first in direct messages', true), check('Show profile photos next to direct messages', true)] },
+        { legend: 'Sections', rows: [check('Show unread messages from VIPs in their own section', true), check('Put private channels in their own section', false), check('Keep direct messages apart from channels', true)] },
+        { legend: 'Shortcuts', rows: [check('Show shortcuts as icons only', false)] },
+      ] },
+      { id: 'appearance', label: 'Appearance', groups: [
+        { legend: 'Appearance', rows: [select('Navigation layout', 'Icon rail'), hint('Icon rail: a narrow rail of views, and the side panel follows the view.'), select('Theme', 'Match my system'), select('Text size', 'Medium'), check('Compact message list', false)] },
+      ] },
+      { id: 'messages', label: 'Messages & media', groups: [
+        { legend: 'Names', rows: [select('Names', 'Display names only'), check('Use a 24-hour clock (14:05)', true), check('Show when people are typing', true)] },
+        { legend: 'Files and links', rows: [check('Show uploaded images and videos in the conversation', true), check('Show link previews', true), check('Show images from links', true), check('Shorten links in messages', true)] },
+        { legend: 'Writing messages', rows: [check('Ctrl+Enter sends; Enter starts a new line', false), check('Format with markup only (hide the formatting buttons)', false)] },
+      ] },
+      { id: 'language', label: 'Language & region', groups: [
+        { legend: 'Language', rows: [select('Language', 'English'), select('Time zone', 'Asia/Ho_Chi_Minh')] },
+      ] },
+      { id: 'accessibility', label: 'Accessibility', groups: [
+        { legend: 'Accessibility', rows: [check('Underline links', false), check('Allow animations (moving reactions, transitions)', true), check('Read out new messages in the open conversation (screen readers)', false), check('Remind me to describe images I upload', false)] },
+      ] },
+      { id: 'markread', label: 'Mark as read', groups: [
+        { legend: 'Mark as read', rows: [check('Keep conversations unread until I press Esc', false)] },
+      ] },
+      { id: 'search', label: 'Search', groups: [
+        { legend: 'Search', rows: [select('Sort results by', 'Best match')] },
+        { legend: 'Leave out of search', rows: [hint("Messages from these channels don't show up in your search results, unless you search in them directly."), select('', 'Choose a channel…')] },
+      ] },
+      { id: 'av', label: 'Audio & video', groups: [
+        { legend: 'Audio & video', rows: [check('Join with my microphone off', false), check('Check my camera and microphone before joining', true), check('Turn on captions when I join', false), check('Leave when my screen locks or the computer goes to sleep', false)] },
+      ] },
+      { id: 'advanced', label: 'Advanced', groups: [
+        { legend: 'Advanced', rows: [check('Check spelling while I type', true), check('Ask before opening a link whose text shows a different web address', true)] },
+      ] },
+    ];
+
+    const cur = (this.state && this.state.tab) || 'notifications';
+    const tabs = TABS.map((t) => ({
+      label: t.label,
+      pick: () => this.setState({ tab: t.id }),
+      bg: t.id === cur ? 'var(--acs)' : 'transparent',
+      color: t.id === cur ? 'var(--ac)' : 'var(--ink)',
+      weight: t.id === cur ? 600 : 400,
+    }));
+    const pane = TABS.find((t) => t.id === cur) || TABS[1];
+    const groups = pane.groups.map((g) => ({
+      legend: g.legend,
+      rows: g.rows.map((r) => ({
+        ...r,
+        isHint: r.kind === 'hint', isCheck: r.kind === 'check', isSelect: r.kind === 'select', isInput: r.kind === 'input', isButtons: r.kind === 'buttons',
+        buttons: (r.labels || []).map((l) => {
+          const primary = l.charAt(0) === '*';
+          return { label: primary ? l.slice(1) : l, bg: primary ? 'var(--ac)' : 'transparent', color: primary ? 'var(--aci)' : 'var(--ink)', border: primary ? 'var(--ac)' : 'var(--ru)' };
+        }),
+      })),
+    }));
+    return { vars: common + (dark ? darkT : lightT), tabs, groups };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toki · Channel details</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="{{vars}}width:1440px;height:900px;position:relative;overflow:hidden;display:flex;background:var(--sb);color:var(--ink);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased;">
+  <div style="width:54px;height:900px;flex:none;">
+    <dc-import name="Rail" active="home" hint-size="54px,900px"></dc-import>
+  </div>
+  <div style="width:280px;height:900px;flex:none;">
+    <dc-import name="SidePanel" active="general" hint-size="280px,900px"></dc-import>
+  </div>
+  <div style="width:706px;height:900px;flex:none;">
+    <dc-import name="Channel" w="706" compact="yes" hint-size="706px,900px"></dc-import>
+  </div>
+  <!-- Details side panel -->
+  <aside aria-label="Details" style="width:400px;height:900px;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:var(--sf);border-left:1px solid var(--ru);">
+    <header style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 20px;border-bottom:1px solid var(--ru);min-height:52px;box-sizing:border-box;flex:none;">
+      <h1 style="margin:0;font-size:17px;font-weight:700;">Details</h1>
+      <a href="Main.dc.html" aria-label="Close" style="width:28px;height:28px;border-radius:6px;display:inline-grid;place-items:center;color:var(--ink);text-decoration:none;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></a>
+    </header>
+    <div style="flex:1;min-height:0;overflow:hidden;display:grid;gap:20px;padding:16px;align-content:start;">
+      <section style="display:grid;gap:10px;">
+        <h2 style="margin:0;font-size:15.2px;font-weight:700;">About</h2>
+        <div style="display:grid;gap:4px;font-size:13.6px;color:var(--mu);">Name<span style="font-size:15.2px;color:var(--ink);">general</span></div>
+        <label style="display:grid;gap:4px;font-size:13.6px;color:var(--mu);">Topic<input type="text" value="Thông báo chung và kế hoạch tuần" style="font:15.2px var(--font);color:var(--ink);padding:6px 8px;border:1px solid var(--ru);border-radius:6px;background:var(--sf);"></label>
+        <label style="display:grid;gap:4px;font-size:13.6px;color:var(--mu);">Description<input type="text" value="Kênh chung cho cả nhóm Acme" style="font:15.2px var(--font);color:var(--ink);padding:6px 8px;border:1px solid var(--ru);border-radius:6px;background:var(--sf);"></label>
+        <p style="margin:0;color:var(--mu);">Created by Alice Nguyễn on Oct 3</p>
+      </section>
+      <section style="display:grid;gap:10px;">
+        <h2 style="margin:0;font-size:15.2px;font-weight:700;">5 members</h2>
+        <ul style="list-style:none;margin:0;padding:0;display:grid;gap:4px;">
+          <sc-for list="{{members}}" as="m" hint-placeholder-count="5">
+            <li style="display:flex;align-items:center;gap:8px;">
+              <span style="width:20px;height:20px;border-radius:5px;display:inline-grid;place-items:center;font-size:9px;font-weight:700;color:#fff;background:{{m.avatar}};flex:none;" aria-hidden="true">{{m.ini}}</span>
+              <span>{{m.name}}</span>
+              <sc-if value="{{m.manager}}" hint-placeholder-val="{{false}}">
+                <span style="font-size:12px;color:var(--mu);border:1px solid var(--ru);border-radius:4px;padding:0 6px;white-space:nowrap;">Channel manager</span>
+              </sc-if>
+              <span style="flex:1;"></span>
+              <sc-if value="{{m.others}}" hint-placeholder-val="{{true}}">
+                <button type="button" style="border:1px solid var(--ru);border-radius:6px;padding:2px 8px;font:600 12.8px var(--font);color:var(--ink);background:none;">Make manager</button>
+                <button type="button" style="border:1px solid var(--ru);border-radius:6px;padding:2px 8px;font:600 12.8px var(--font);color:var(--dg);background:none;">Remove</button>
+              </sc-if>
+            </li>
+          </sc-for>
+        </ul>
+        <input type="text" placeholder="Add people by name or email" aria-label="Add people" style="width:100%;box-sizing:border-box;font:15px var(--font);padding:6px 8px;border:1px solid var(--ru);border-radius:6px;background:var(--sf);color:var(--ink);">
+      </section>
+      <section style="display:grid;gap:10px;">
+        <h2 style="margin:0;font-size:15.2px;font-weight:700;">Settings</h2>
+        <label style="display:flex;gap:8px;align-items:center;"><input type="checkbox" style="margin:0;accent-color:var(--ac);">Only channel managers can post</label>
+        <button type="button" style="justify-self:start;border:1px solid var(--ru);border-radius:6px;padding:7px 14px;min-height:34px;font:600 15px var(--font);color:var(--ink);background:none;">Make private</button>
+        <p style="margin:0;font-size:13px;color:var(--mu);">Can't be undone. Only current members will see the channel.</p>
+        <button type="button" style="justify-self:start;border:1px solid var(--ru);border-radius:6px;padding:7px 14px;min-height:34px;font:600 15px var(--font);color:var(--dg);background:none;">Archive channel</button>
+        <button type="button" style="justify-self:start;border:1px solid var(--ru);border-radius:6px;padding:7px 14px;min-height:34px;font:600 15px var(--font);color:var(--dg);background:none;">Leave</button>
+      </section>
+    </div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.theme ?? 'dark') === 'dark';
+    const common = "--rail-ink:#D9DAF0;--sb-ink:#C9CAE6;--sb-strong:#ffffff;--sb-active:#4B4FD8;--badge:#E11D48;--focus:#6B6EF0;--font:'Inter','Segoe UI',system-ui,-apple-system,'Noto Sans',sans-serif;--mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;";
+    const darkT = "--bg:#12121C;--sf:#1B1B29;--sf2:#22223A;--rail:#0E0E18;--sb:#161622;--sbh:#22223A;--ink:#E9E9F6;--mu:#9A9AB5;--ru:#2D2D42;--ac:#8B8EF5;--aci:#12122A;--acs:#25264A;--men:#443214;--meni:#F0C47A;--dg:#F08196;";
+    const lightT = "--bg:#F5F5FA;--sf:#ffffff;--sf2:#EEEEF6;--rail:#1B1B2F;--sb:#232340;--sbh:#2E2E52;--ink:#1B1B2F;--mu:#66667F;--ru:#E2E2EE;--ac:#4B4FD8;--aci:#ffffff;--acs:#E9E9FC;--men:#FBEFD5;--meni:#9A6212;--dg:#B8344A;";
+    const list = [
+      { name: 'Alice Nguyễn (you)', ini: 'AN', hue: 262, manager: true, others: false },
+      { name: 'Bob Trần', ini: 'BT', hue: 215, manager: false, others: true },
+      { name: 'Chi Lê', ini: 'CL', hue: 335, manager: false, others: true },
+      { name: 'Dũng Phạm', ini: 'DP', hue: 22, manager: false, others: true },
+      { name: 'Hà Võ', ini: 'HV', hue: 285, manager: false, others: true },
+    ];
+    const members = list.map((m) => ({ ...m, avatar: 'hsl(' + m.hue + ' 45% 42%)' }));
+    return { vars: common + (dark ? darkT : lightT), members };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toki · DMs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="{{vars}}width:1440px;height:900px;position:relative;overflow:hidden;display:flex;background:var(--sb);color:var(--ink);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased;">
+  <div style="width:54px;height:900px;flex:none;">
+    <dc-import name="Rail" active="dms" hint-size="54px,900px"></dc-import>
+  </div>
+  <!-- DMs side panel -->
+  <aside aria-label="Direct messages" style="width:280px;height:900px;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:var(--sb);color:var(--sb-ink);">
+    <header style="display:flex;align-items:center;gap:6px;padding:14px 12px 10px 16px;">
+      <h2 style="margin:0;font-size:17px;font-weight:700;color:var(--sb-strong);flex:1;min-width:0;">Direct messages</h2>
+      <button type="button" aria-label="New message" style="width:28px;height:28px;border:0;border-radius:6px;background:none;color:var(--sb-ink);display:inline-grid;place-items:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg></button>
+    </header>
+    <div style="padding:0 12px 8px;display:flex;align-items:center;gap:6px;">
+      <div style="flex:1;min-width:0;padding:6px 10px;border-radius:6px;background:var(--sbh);color:var(--sb-ink);font-size:13px;">Find a DM</div>
+      <button type="button" aria-pressed="false" style="flex:none;padding:3px 10px;border-radius:999px;border:1px solid rgba(196,211,208,.4);background:none;font:600 12px var(--font);color:var(--sb-ink);">Unreads</button>
+    </div>
+    <ul style="list-style:none;margin:0;padding:0 8px;display:grid;gap:2px;">
+      <sc-for list="{{cards}}" as="c" hint-placeholder-count="4">
+        <li>
+          <a href="DMs.dc.html" style="display:flex;align-items:flex-start;gap:10px;padding:8px;border-radius:8px;text-decoration:none;color:var(--sb-ink);background:{{c.bg}};">
+            <span style="width:36px;height:36px;border-radius:8px;flex:none;display:inline-grid;place-items:center;font-size:13px;font-weight:700;color:#fff;background:{{c.avatar}};margin-top:2px;" aria-hidden="true">{{c.ini}}</span>
+            <span style="flex:1;min-width:0;display:grid;gap:1px;">
+              <span style="display:flex;align-items:baseline;gap:8px;"><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:{{c.weight}};color:var(--sb-strong);">{{c.name}}</span><time style="flex:none;font-size:11px;opacity:.8;">{{c.time}}</time></span>
+              <span style="font-size:13px;line-height:1.35;opacity:.9;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;color:{{c.previewColor}};">{{c.preview}}</span>
+            </span>
+            <sc-if value="{{c.unread}}" hint-placeholder-val="{{false}}">
+              <span style="flex:none;align-self:center;min-width:16px;height:16px;padding:0 5px;border-radius:9px;background:var(--badge);color:#fff;font-size:10px;font-weight:700;display:inline-grid;place-items:center;">{{c.count}}</span>
+            </sc-if>
+          </a>
+        </li>
+      </sc-for>
+      <li>
+        <a href="DMs.dc.html" style="display:flex;align-items:flex-start;gap:10px;padding:8px;border-radius:8px;text-decoration:none;color:var(--sb-ink);">
+          <span style="position:relative;width:36px;height:36px;flex:none;margin-top:2px;" aria-hidden="true">
+            <span style="position:absolute;top:0;left:0;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;background:hsl(22 45% 42%);">DP</span>
+            <span style="position:absolute;right:0;bottom:0;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;background:hsl(285 45% 42%);box-shadow:0 0 0 2px var(--sb);">HV</span>
+          </span>
+          <span style="flex:1;min-width:0;display:grid;gap:1px;">
+            <span style="display:flex;align-items:baseline;gap:8px;"><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--sb-strong);">Dũng Phạm, Hà Võ</span><time style="flex:none;font-size:11px;opacity:.8;">Mon</time></span>
+            <span style="font-size:13px;line-height:1.35;opacity:.9;">Hà: Tài liệu thiết kế đã cập nhật rồi nhé</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+  <!-- DM conversation -->
+  <section style="width:1106px;height:900px;flex:none;box-sizing:border-box;display:flex;flex-direction:column;background:var(--sf);border-left:1px solid var(--ru);border-top-left-radius:10px;overflow:hidden;">
+    <header style="border-bottom:1px solid var(--ru);">
+      <div style="display:flex;align-items:center;gap:4px;padding:8px 16px 4px 12px;min-height:48px;box-sizing:border-box;">
+        <span style="display:inline-flex;align-items:center;gap:8px;padding:4px 6px;font-weight:800;font-size:17px;">
+          <span style="position:relative;width:22px;height:22px;border-radius:6px;display:inline-grid;place-items:center;font-size:9px;font-weight:700;color:#fff;background:hsl(215 45% 42%);" aria-hidden="true">BT<span style="position:absolute;right:-3px;bottom:-3px;width:9px;height:9px;border-radius:50%;background:#5DD3A0;border:2px solid var(--sf);"></span></span>
+          Bob Trần
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--mu)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </span>
+        <span style="flex:1 1 0;"></span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="display:inline-flex;border:1px solid var(--ru);border-radius:8px;">
+            <a href="Meet.dc.html" style="display:inline-flex;align-items:center;gap:6px;padding:4px 8px 4px 10px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>Meet</a>
+            <button type="button" aria-label="More ways to join" style="width:24px;border:0;border-left:1px solid var(--ru);border-radius:0 7px 7px 0;background:none;color:var(--mu);display:inline-grid;place-items:center;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          </span>
+          <button type="button" aria-label="Notification settings" style="width:32px;height:32px;border:0;border-radius:6px;background:none;color:var(--mu);display:inline-grid;place-items:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg></button>
+          <a href="Search.dc.html" style="position:relative;display:flex;align-items:center;width:200px;padding:5px 10px 5px 30px;box-sizing:border-box;border-radius:8px;border:1px solid var(--ru);background:var(--sf2);color:var(--mu);font-size:14px;text-decoration:none;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position:absolute;left:8px;"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>Search Bob Trần</a>
+          <button type="button" aria-label="More options" style="width:32px;height:32px;border:0;border-radius:6px;background:none;color:var(--mu);display:inline-grid;place-items:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+      </div>
+      <nav aria-label="Conversation tabs" style="display:flex;align-items:flex-end;gap:2px;padding:0 12px;">
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px 7px;border-bottom:2px solid var(--ac);color:var(--ink);font-size:13px;font-weight:600;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>Messages</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px 7px;border-bottom:2px solid transparent;color:var(--mu);font-size:13px;font-weight:600;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Files &amp; links</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px 7px;border-bottom:2px solid transparent;color:var(--mu);font-size:13px;font-weight:600;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>Pins</span>
+        <button type="button" aria-label="Add a tab" style="width:28px;height:28px;margin-bottom:3px;border:0;border-radius:6px;background:none;color:var(--mu);display:inline-grid;place-items:center;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      </nav>
+    </header>
+    <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:8px 0 12px;">
+      <!-- conversation start -->
+      <div style="padding:32px 20px 16px;display:grid;gap:6px;justify-items:start;">
+        <span style="width:64px;height:64px;border-radius:14px;display:inline-grid;place-items:center;font-size:22px;font-weight:700;color:#fff;background:hsl(215 45% 42%);" aria-hidden="true">BT</span>
+        <h2 style="margin:0;font-size:28px;font-weight:800;">Bob Trần</h2>
+        <p style="margin:0;color:var(--mu);max-width:70ch;line-height:1.5;">This is the beginning of your direct messages with Bob Trần. Only the two of you are here.</p>
+        <a href="Profile.dc.html" style="margin-top:8px;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--ru);border-radius:8px;font-weight:600;color:var(--ink);text-decoration:none;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>View profile</a>
+      </div>
+      <div style="display:flex;align-items:center;margin:16px 0 6px;font-size:12px;font-weight:700;"><span style="flex:1;height:1px;background:var(--ru);"></span><span style="padding:3px 14px;border:1px solid var(--ru);border-radius:999px;background:var(--sf);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.06);">Today</span><span style="flex:1;height:1px;background:var(--ru);"></span></div>
+      <div style="display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;padding:6px 20px 4px;">
+        <span style="width:36px;height:36px;border-radius:8px;display:inline-grid;place-items:center;font-size:13px;font-weight:700;color:#fff;background:hsl(215 45% 42%);margin-top:2px;" aria-hidden="true">BT</span>
+        <div><div style="display:flex;align-items:baseline;gap:8px;"><span style="font-weight:700;">Bob Trần</span><time style="font-size:12px;color:var(--mu);">09:02</time></div><div>Chào Alice, bạn xem giúp mình bản kế hoạch tuần này nhé.</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;padding:6px 20px 4px;">
+        <span style="width:36px;height:36px;border-radius:8px;display:inline-grid;place-items:center;font-size:13px;font-weight:700;color:#fff;background:hsl(262 45% 42%);margin-top:2px;" aria-hidden="true">AN</span>
+        <div><div style="display:flex;align-items:baseline;gap:8px;"><span style="font-weight:700;">Alice Nguyễn</span><time style="font-size:12px;color:var(--mu);">09:10</time></div><div>Ok, mình xem rồi sẽ phản hồi trước trưa.</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;padding:1px 20px;">
+        <span></span>
+        <div>Họp lúc 14:00 nhé?</div>
+      </div>
+    </div>
+    <div style="padding:0 20px 16px;">
+      <dc-import name="Composer" ph="Message Bob Trần" w="1066" hint-size="1066px,106px"></dc-import>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.theme ?? 'dark') === 'dark';
+    const common = "--rail-ink:#D9DAF0;--sb-ink:#C9CAE6;--sb-strong:#ffffff;--sb-active:#4B4FD8;--badge:#E11D48;--focus:#6B6EF0;--font:'Inter','Segoe UI',system-ui,-apple-system,'Noto Sans',sans-serif;--mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;";
+    const darkT = "--bg:#12121C;--sf:#1B1B29;--sf2:#22223A;--rail:#0E0E18;--sb:#161622;--sbh:#22223A;--ink:#E9E9F6;--mu:#9A9AB5;--ru:#2D2D42;--ac:#8B8EF5;--aci:#12122A;--acs:#25264A;--men:#443214;--meni:#F0C47A;--dg:#F08196;";
+    const lightT = "--bg:#F5F5FA;--sf:#ffffff;--sf2:#EEEEF6;--rail:#1B1B2F;--sb:#232340;--sbh:#2E2E52;--ink:#1B1B2F;--mu:#66667F;--ru:#E2E2EE;--ac:#4B4FD8;--aci:#ffffff;--acs:#E9E9FC;--men:#FBEFD5;--meni:#9A6212;--dg:#B8344A;";
+    // DM list: one entry per card. active = open conversation, unread = bold + badge.
+    const dms = [
+      { name: 'Bob Trần', ini: 'BT', hue: 215, time: '11:42', preview: 'You: Họp lúc 14:00 nhé?', active: true, unread: false, count: 0 },
+      { name: 'Chi Lê', ini: 'CL', hue: 335, time: '10:15', preview: 'Mình đã gửi lịch họp, bạn xem giúp nhé', active: false, unread: true, count: 2 },
+      { name: 'Dũng Phạm', ini: 'DP', hue: 22, time: 'Yesterday', preview: 'Ok, mình sẽ review PR trước chiều nay', active: false, unread: false, count: 0 },
+      { name: 'Hà Võ', ini: 'HV', hue: 285, time: 'Mon', preview: 'Cảm ơn bạn nhé 🙏', active: false, unread: false, count: 0 },
+    ];
+    const cards = dms.map((d) => ({
+      ...d,
+      bg: d.active ? '#4B4FD8' : 'transparent',
+      avatar: 'hsl(' + d.hue + ' 45% 42%)',
+      weight: d.unread ? 800 : 600,
+      previewColor: d.unread || d.active ? '#ffffff' : 'inherit',
+    }));
+    return { vars: common + (dark ? darkT : lightT), cards };
+  }
+}
+</script>
+</body>
+</html>

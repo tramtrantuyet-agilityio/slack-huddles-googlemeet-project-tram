@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Toki Build Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column (max 1040px) with a sticky section nav; inventory as filterable table, phases as a horizontal timeline. Palette borrows Toki's own indigo tokens from the prototype. */
+:root{
+  --bg:#F5F5FA; --sf:#FFFFFF; --sf2:#EEEEF6; --ink:#1B1B2F; --mu:#5F5F78; --ru:#E2E2EE;
+  --ac:#4B4FD8; --acs:#E9E9FC; --aci:#FFFFFF;
+  --p0:#6B6B85; --p1:#4B4FD8; --p2:#0E8A7A; --p3:#B0661A; --p4:#B8344A; --p5:#7A4BC4; --p6:#1F7FB8; --p7:#8A8A9E;
+  --font:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  --display:'Space Grotesk','Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12121C; --sf:#1B1B29; --sf2:#22223A; --ink:#E9E9F6; --mu:#A0A0BB; --ru:#2D2D42;
+  --ac:#8B8EF5; --acs:#25264A; --aci:#12122A;
+  --p0:#A0A0BB; --p1:#8B8EF5; --p2:#4FD1BC; --p3:#E8B45C; --p4:#F08196; --p5:#B99AF0; --p6:#6CB8E8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12121C; --sf:#1B1B29; --sf2:#22223A; --ink:#E9E9F6; --mu:#A0A0BB; --ru:#2D2D42;
+  --ac:#8B8EF5; --acs:#25264A; --aci:#12122A;
+  --p0:#A0A0BB; --p1:#8B8EF5; --p2:#4FD1BC; --p3:#E8B45C; --p4:#F08196; --p5:#B99AF0; --p6:#6CB8E8; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--font);margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:40px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(30px,5vw,44px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:26px;font-weight:600;margin-bottom:14px}
+h3{font-size:17px;font-weight:600}
+p{margin:0;max-width:68ch}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ac)}
+.lede{font-size:17px;color:var(--mu);margin-top:14px}
+section{padding-top:48px;display:flex;flex-direction:column;gap:14px;scroll-margin-top:60px}
+code,.mono{font-family:var(--mono);font-size:.88em}
+code{background:var(--sf2);padding:1px 5px;border-radius:4px}
+a{color:var(--ac)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--ru);margin-top:28px}
+nav.toc ul{list-style:none;margin:0;padding:10px 0;display:flex;gap:6px 18px;flex-wrap:wrap;font-size:13.5px}
+nav.toc a{color:var(--mu);text-decoration:none}nav.toc a:hover{color:var(--ink)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--ru);border:1px solid var(--ru);border-radius:10px;overflow:hidden;margin-top:26px}
+.facts div{background:var(--sf);padding:14px 16px}
+.facts b{display:block;font:600 24px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.facts span{font-size:13px;color:var(--mu)}
+
+.note{background:var(--acs);border-radius:8px;padding:12px 16px;font-size:14px;max-width:none}
+
+/* Phase chips */
+.ph{display:inline-block;font:500 11px/1 var(--mono);padding:4px 7px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.ph[data-p="0"]{color:var(--p0)}.ph[data-p="1"]{color:var(--p1)}.ph[data-p="2"]{color:var(--p2)}.ph[data-p="3"]{color:var(--p3)}.ph[data-p="4"]{color:var(--p4)}.ph[data-p="5"]{color:var(--p5)}.ph[data-p="6"]{color:var(--p6)}.ph[data-p="7"]{color:var(--p7);border-style:dashed}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filters button{font:500 13px var(--font);background:var(--sf);color:var(--ink);border:1px solid var(--ru);border-radius:999px;padding:6px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ac);color:var(--aci);border-color:var(--ac)}
+.filters .count{font-size:13px;color:var(--mu);margin-left:auto;font-variant-numeric:tabular-nums}
+
+.tbl{overflow-x:auto;border:1px solid var(--ru);border-radius:10px;background:var(--sf)}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--ru)}
+th{font:500 11.5px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mu);background:var(--sf2);position:sticky;top:0}
+tr.area td{background:var(--sf2);font:600 13.5px var(--display);color:var(--ink);padding-top:12px}
+tr.area td small{font:400 12px var(--mono);color:var(--mu);margin-left:8px}
+td.src{font-family:var(--mono);font-size:12px;color:var(--mu);white-space:nowrap}
+td.ph-cell{white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card{background:var(--sf);border:1px solid var(--ru);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.card .k{font:500 12px var(--mono);color:var(--mu)}
+
+/* Timeline */
+.tl{overflow-x:auto;border:1px solid var(--ru);border-radius:10px;background:var(--sf);padding:16px}
+.tl-inner{min-width:720px;display:grid;grid-template-columns:150px repeat(28,1fr);row-gap:8px;font-size:12px}
+.tl-inner .wk{font:400 10.5px var(--mono);color:var(--mu);text-align:center;font-variant-numeric:tabular-nums}
+.tl-inner .lbl{font:600 12.5px var(--display);padding-right:8px;align-self:center}
+.bar{height:26px;border-radius:5px;display:flex;align-items:center;padding:0 8px;font:500 11px var(--mono);color:var(--aci);overflow:hidden;white-space:nowrap}
+.bar[data-p="0"]{background:var(--p0)}.bar[data-p="1"]{background:var(--p1)}.bar[data-p="2"]{background:var(--p2)}.bar[data-p="3"]{background:var(--p3)}.bar[data-p="4"]{background:var(--p4)}.bar[data-p="5"]{background:var(--p5)}.bar[data-p="6"]{background:var(--p6)}
+.ms{grid-column:1/-1;border-top:1px dashed var(--ru);margin-top:4px;padding-top:8px;display:flex;gap:6px 22px;flex-wrap:wrap;color:var(--mu);font-size:12.5px}
+.ms b{color:var(--ink)}
+
+.phase{border-left:3px solid var(--ru);padding:4px 0 4px 18px;display:flex;flex-direction:column;gap:8px}
+.phase[data-p="0"]{border-color:var(--p0)}.phase[data-p="1"]{border-color:var(--p1)}.phase[data-p="2"]{border-color:var(--p2)}.phase[data-p="3"]{border-color:var(--p3)}.phase[data-p="4"]{border-color:var(--p4)}.phase[data-p="5"]{border-color:var(--p5)}.phase[data-p="6"]{border-color:var(--p6)}.phase[data-p="7"]{border-color:var(--p7);border-left-style:dashed}
+.phase .when{font:500 12px var(--mono);color:var(--mu)}
+.phase ul{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:3px;max-width:80ch}
+.phase .exit{font-size:13.5px;color:var(--mu)}
+.phase .exit b{color:var(--ink)}
+.phases{display:flex;flex-direction:column;gap:26px}
+
+pre.mermaid{background:var(--sf);border:1px solid var(--ru);border-radius:10px;padding:16px;overflow-x:auto;margin:0}
+.risk td:first-child{font-weight:600;width:28%}
+td.tk-id{font-family:var(--mono);font-size:12px;white-space:nowrap}
+td.tk-ac{font-size:13px;color:var(--mu);display:block;margin-top:3px}
+footer{margin-top:56px;color:var(--mu);font-size:13px;border-top:1px solid var(--ru);padding-top:16px}
+@media (max-width:560px){h2{font-size:22px}.filters .count{margin-left:0;width:100%}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Build plan · from the “Toki UI Prototype” canvas</div>
+    <h1 style="margin-top:10px">Toki: team chat, huddles and meetings in one app</h1>
+    <p class="lede">A feature-by-feature reading of the 23-board prototype, turned into an architecture, a data model and a seven-phase, 28-week delivery plan. Every feature below is traced to the board it appears on.</p>
+    <div class="facts">
+      <div><b>23</b><span>boards studied (19 screens, 4 shared parts)</span></div>
+      <div><b>136</b><span>features (121 from boards + 15 agreed additions)</span></div>
+      <div><b>7</b><span>delivery phases</span></div>
+      <div><b>~28 wks</b><span>to App Store / Play launch, 6–7 person team</span></div>
+      <div><b>Week 13</b><span>internal dogfood (chat + Meet)</span></div>
+    </div>
+    <p class="note" style="margin-top:18px"><b>Scope decisions (agreed):</b> first customer is our own company · chat and Meet ship together · v1 adds Meet recording, guest join links, calendar scheduling and AI notes, none of which are in the prototype · team of 5–6 for about 6 months. As a result, retention, legal holds, export and external channels move to a post-beta release.</p>
+    <p class="note"><b>Round 2:</b> native iOS and Android apps in the App Store and Play · a managed cloud service that we host (Singapore region assumed) · a third-party integrations platform · starred files synced to the account on every device · captions and AI notes in both Vietnamese and English. Native apps and integrations don’t fit in 24 weeks with 5–6 people. The plan therefore adds <b>one mobile engineer from week 9</b> and a new <b>P6, weeks 12–28</b>. The internal beta stays at week 24, delivered through TestFlight and Play internal testing, and the public store launch is week 28. <b>Confirmed:</b> integrations stay in scope and we hire the mobile engineer.</p>
+  </header>
+
+  <nav class="toc" aria-label="Sections"><ul>
+    <li><a href="#what">What the prototype is</a></li>
+    <li><a href="#inventory">Feature inventory</a></li>
+    <li><a href="#arch">Architecture</a></li>
+    <li><a href="#data">Data model</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#phases">Phases</a></li>
+    <li><a href="#tickets">Tickets</a></li>
+    <li><a href="#nfr">Cross-cutting</a></li>
+    <li><a href="#risks">Risks &amp; open questions</a></li>
+  </ul></nav>
+
+  <section id="what">
+    <div class="eyebrow">01 · Reading</div>
+    <h2>What the prototype is</h2>
+    <p>Toki is a workspace messenger for a single company (“Acme”) that merges three products: Slack-style channels and DMs, a Huddle-style live room attached to every conversation, and a Google Meet-style call screen with captions, hand raising and screen sharing. Calls are not a separate app. The <b>Meet</b> button sits in every channel and DM header, the in-call chat is the conversation itself, and a sidebar shortcut lists the Meets running now.</p>
+    <p>The prototype is static design (no backend), written as interactive boards on one canvas. Content is Vietnamese while the UI is English with a language picker, so diacritic-aware search and full localisation are core requirements, not polish. The colour tokens reference <code>apps/web/style.css</code>, which suggests a web-first monorepo. It also includes enterprise controls you rarely see in a prototype: a tamper-evident audit log, retention, legal holds and JSONL exports.</p>
+    <div class="grid2">
+      <div class="card"><span class="k">Core · 4 boards</span><h3>Home, Thread, DMs, Activity</h3><p style="font-size:14px;color:var(--mu)">Icon rail + side panel + channel view, the reading and writing loop.</p></div>
+      <div class="card"><span class="k">Directories &amp; tools · 4 boards</span><h3>Files, Later, People, Channels</h3><p style="font-size:14px;color:var(--mu)">Retrieval, saved items, reminders, discovery.</p></div>
+      <div class="card"><span class="k">Overlays &amp; settings · 4 boards</span><h3>Search, Jump to, Preferences, Profile</h3><p style="font-size:14px;color:var(--mu)">Ctrl K switcher, scoped search, 12-tab settings.</p></div>
+      <div class="card"><span class="k">Calls, admin, variants · 7 boards</span><h3>Meet, Channel details, Admin, Classic, Sign in, Phone ×2</h3><p style="font-size:14px;color:var(--mu)">The call screen, governance, an alternate layout and mobile.</p></div>
+    </div>
+  </section>
+
+  <section id="inventory">
+    <div class="eyebrow">02 · Inventory</div>
+    <h2>Feature inventory</h2>
+    <p>Each row names the feature, the board it was read from, and the phase that builds it. Filter by phase to see a phase’s scope.</p>
+    <div class="filters" role="group" aria-label="Filter by phase">
+      <button type="button" data-f="all" aria-pressed="true">All</button>
+      <button type="button" data-f="0">P0 Foundations</button>
+      <button type="button" data-f="1">P1 Messaging</button>
+      <button type="button" data-f="2">P2 Meet</button>
+      <button type="button" data-f="3">P3 Attention</button>
+      <button type="button" data-f="4">P4 Meet+</button>
+      <button type="button" data-f="5">P5 Beta &amp; admin</button>
+      <button type="button" data-f="6">P6 Apps &amp; integrations</button>
+      <button type="button" data-f="7">Deferred</button>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="tbl"><table id="inv">
+      <thead><tr><th>Feature</th><th>What it does</th><th>Board</th><th>Phase</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <section id="arch">
+    <div class="eyebrow">03 · Architecture</div>
+    <h2>Architecture</h2>
+    <p>One TypeScript monorepo. A stateless API serves REST for reads and writes; a WebSocket gateway fans out realtime events; a self-hostable SFU carries audio, video and screen share. Postgres is the source of truth, Redis carries presence, typing and pub/sub, and object storage holds files. Background workers own anything scheduled: reminders, scheduled sends, retention, exports, link unfurls and captions.</p>
+<pre class="mermaid">
+flowchart LR
+  subgraph Clients
+    W[Web app<br/>React + Vite]
+    D[Desktop shell<br/>Tauri]
+    M[iOS + Android<br/>React Native]
+  end
+  W & D & M -->|REST / JSON| API[API service<br/>Fastify + Zod]
+  W & D & M <-->|WebSocket events| GW[Realtime gateway]
+  W & D & M <-->|WebRTC| SFU[LiveKit SFU<br/>Meet media]
+  API --> PG[(Postgres 16<br/>messages, audit chain)]
+  API --> R[(Redis<br/>presence, typing, pub/sub)]
+  GW <--> R
+  API --> S3[(Object storage<br/>S3 / MinIO)]
+  API --> SR[(Search index<br/>Meilisearch / OpenSearch)]
+  API -->|token + room| SFU
+  SFU -->|webhooks| API
+  Q[Job workers<br/>BullMQ] --> PG
+  Q --> S3
+  Q --> SR
+  SFU -->|audio track| CAP[Captions worker<br/>streaming ASR, vi + en]
+  CAP --> GW
+  SFU -->|egress| REC[Recording worker<br/>LiveKit Egress] --> S3
+  CAP -->|transcript| AI[AI notes worker<br/>Claude API] --> API
+  API <-->|OAuth| CAL[Google / Microsoft calendars]
+  G[Guest browser<br/>signed link + lobby] <-->|WebRTC| SFU
+  APPS[Third-party apps<br/>bots, webhooks, commands] <-->|Apps API + signed events| API
+  API --> IDP[Company IdP<br/>OIDC / SAML]
+  Q --> PUSH[Web push / APNs / FCM / email]
+</pre>
+    <div class="grid2">
+      <div class="card"><span class="k">Recommended stack</span>
+        <ul>
+          <li><b>Web:</b> React 18, Vite, TanStack Query, a virtualised message list, Tiptap/ProseMirror for the composer.</li>
+          <li><b>API:</b> Node 22, Fastify, Zod contracts shared with the client, Drizzle or Prisma.</li>
+          <li><b>Realtime:</b> plain WebSocket gateway, Redis pub/sub, per-conversation sequence numbers for gap-free resync.</li>
+          <li><b>Meet:</b> LiveKit (open source SFU, simulcast, screen share, data channels for reactions and hand raise).</li>
+          <li><b>Search:</b> Postgres FTS with <code>unaccent</code> for P1, a dedicated index in P3.</li>
+          <li><b>Desktop:</b> Tauri shell around the web app in P5.</li>
+          <li><b>Mobile:</b> React Native (Expo) with the LiveKit mobile SDK, sharing contracts with web.</li>
+          <li><b>Hosting:</b> managed cloud, Singapore region. Kubernetes for API, gateway and workers; managed Postgres, Redis and S3; LiveKit on dedicated media nodes with TURN.</li>
+        </ul></div>
+      <div class="card"><span class="k">Why these choices</span>
+        <ul>
+          <li>We run it as a managed service. Singapore keeps latency to Vietnam low (about 30–40 ms), and every component is open source, so moving region or self-hosting later stays possible.</li>
+          <li>LiveKit avoids writing an SFU and handles 5-to-50-person rooms; the prototype’s largest call shows 5.</li>
+          <li>Sequence-numbered events keep the “New messages” divider, unread badges and the Connected indicator honest after reconnects.</li>
+          <li>Shared Zod schemas keep the 12 Preferences tabs and the admin settings typed on both sides.</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section id="data">
+    <div class="eyebrow">04 · Data model</div>
+    <h2>Data model</h2>
+    <p>Entities implied by the boards, grouped by the phase that first needs them. Every table carries <code>workspace_id</code>; tenant isolation is enforced in the API layer and with Postgres row-level security.</p>
+    <div class="grid2">
+      <div class="card"><span class="k">Identity · P0</span><ul>
+        <li><b>Workspace</b>: name, icon, settings JSON (link previews, blocked domains, permissions, edit window)</li>
+        <li><b>User</b>: email, display name, full name, title, pronouns, phone, time zone, photo</li>
+        <li><b>Membership</b>: role (owner / admin / member / guest), active flag</li>
+        <li><b>Session</b>: device, last seen; supports “Sign out everywhere”</li>
+      </ul></div>
+      <div class="card"><span class="k">Conversations · P1</span><ul>
+        <li><b>Conversation</b>: kind (public, private, dm, group_dm), name, topic, description, archived_at, managers_only_post</li>
+        <li><b>ConversationMember</b>: is_manager, notify_level, muted, starred, last_read_seq, follow</li>
+        <li><b>Message</b>: seq, author, rich-text doc (JSON AST), thread_root_id, also_in_channel, edited_at, deleted_at, pinned_at</li>
+        <li><b>Reaction</b>, <b>Attachment</b> (size, mime, storage key, expired_at), <b>LinkPreview</b></li>
+        <li><b>ThreadFollow</b>, <b>Draft</b>, <b>ConversationTab</b></li>
+      </ul></div>
+      <div class="card"><span class="k">Meet · P2</span><ul>
+        <li><b>MeetSession</b>: conversation_id, sfu_room, started_by, started_at, ended_at, scheduled_for, calendar_event_id</li>
+        <li><b>Recording</b>: meet_id, started_by, storage key, duration, attachment_id (P4)</li>
+        <li><b>GuestLink</b>: meet_id, token hash, expires_at, revoked_at; <b>GuestParticipant</b>: name, admitted_by (P4)</li>
+        <li><b>MeetNotes</b>: meet_id, summary, decisions, action items, model, posted_message_id (P4)</li>
+        <li><b>CalendarConnection</b>: user, provider (Google, Microsoft), encrypted OAuth tokens (P4)</li>
+        <li><b>MeetParticipant</b>: joined_at, left_at, device info</li>
+        <li><b>CaptionSegment</b> (optional storage, off by default): speaker, text, t_start, t_end, language</li>
+        <li>Ephemeral, in Redis / data channel: speaking, muted, hand raised, reactions</li>
+      </ul></div>
+      <div class="card"><span class="k">Attention · P3</span><ul>
+        <li><b>ActivityItem</b>: kind (mention, reply, reaction, dm, reminder), target, read_at</li>
+        <li><b>LaterItem</b>: message_id or free text, status (in_progress, done), remind_at, recurrence (RRULE)</li>
+        <li><b>ScheduledMessage</b>: conversation, body, send_at</li>
+        <li><b>FileStar</b>: user, attachment (synced across devices)</li>
+        <li><b>UserPreference</b> (typed JSON, one row per user), <b>VIP</b>, <b>HiddenPerson</b>, <b>Keyword</b>, <b>Status</b> (text, emoji, clear_at)</li>
+      </ul></div>
+      <div class="card"><span class="k">Governance · P5 essentials, rest deferred</span><ul>
+        <li><b>AuditEvent</b>: at, actor, action (<code>role.change</code>, <code>channel.create</code>, …), detail, prev_hash, hash</li>
+        <li><b>RetentionPolicy</b>: org-wide days or keep forever</li>
+        <li><b>LegalHold</b>: conversation, note, created_by, released_at</li>
+        <li><b>ExportJob</b>: scope (public / everything), status, file manifest, download URL</li>
+        <li><b>Invitation</b>: email, role, channels, expires_at; <b>ExternalConnection</b></li>
+      </ul></div>
+      <div class="card"><span class="k">Mobile &amp; integrations · P6</span><ul>
+        <li><b>Device</b>: platform, push token, app version, last active (for the phone delay rule)</li>
+        <li><b>App</b>: name, owner, scopes, redirect URLs, signing secret</li>
+        <li><b>AppInstall</b>: workspace, approved_by, scopes granted, bot user id</li>
+        <li><b>ApiToken</b>: install or bot, scopes, hash, last used</li>
+        <li><b>IncomingWebhook</b>, <b>SlashCommand</b>, <b>EventSubscription</b> (topic, URL, delivery log)</li>
+      </ul></div>
+      <div class="card"><span class="k">Realtime events</span><ul class="mono" style="font-size:12.5px">
+        <li>message.created / updated / deleted</li>
+        <li>reaction.added / removed</li>
+        <li>thread.replied · read.updated</li>
+        <li>typing.started · presence.changed</li>
+        <li>conversation.updated · member.changed</li>
+        <li>meet.started / ended · meet.roster</li>
+        <li>activity.created · later.due</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="timeline">
+    <div class="eyebrow">05 · Timeline</div>
+    <h2>Timeline</h2>
+    <p>Assumes 3 full-stack engineers, 1 realtime/media engineer, 1 mobile engineer from week 9, 1 designer shared with QA, and a part-time DevOps owner. Phases overlap where the work is independent: the media engineer starts Meet spikes during P1.</p>
+    <div class="tl"><div class="tl-inner" id="tl"></div></div>
+    <h3 style="margin-top:10px">Mobile engineer hire</h3>
+    <div class="grid2">
+      <div class="card"><span class="k">Role</span><ul>
+        <li>Senior mobile engineer, React Native, 4+ years, with at least one app shipped to both stores.</li>
+        <li>Must have: Expo or bare React Native, push (APNs and FCM), offline sync, release pipelines (Fastlane or EAS).</li>
+        <li>Strong plus: WebRTC or LiveKit on mobile, CallKit and ConnectionService, Vietnamese and English.</li>
+        <li>Owns: P6a native apps end to end, store listings and review, and mobile on-call after launch.</li>
+      </ul></div>
+      <div class="card"><span class="k">Hiring timeline</span><ul>
+        <li><b>Wk 0–1:</b> job description signed off, posted, recruiter or agency briefed.</li>
+        <li><b>Wk 2–5:</b> screening and a take-home task (build a chat screen against a mock API).</li>
+        <li><b>Wk 5–6:</b> final round with the tech lead and media engineer; offer out.</li>
+        <li><b>Wk 9:</b> start date (allows up to 3 weeks notice).</li>
+        <li><b>Wk 9–11:</b> onboarding: repo, <code>packages/contracts</code>, design tokens, an Expo shell with sign-in.</li>
+      </ul></div>
+      <div class="card"><span class="k">Until they join</span><ul>
+        <li>A full-stack engineer sets up the Expo project, the shared API client and CI build lanes in P0–P1 (about 3 days).</li>
+        <li>Apple Developer and Google Play accounts, bundle IDs and push certificates are requested in week 1, because approval can take two weeks.</li>
+        <li>The designer adapts the two phone boards into native navigation (tab bar, stack) by week 9.</li>
+      </ul></div>
+      <div class="card"><span class="k">Fallback triggers</span><ul>
+        <li><b>No offer accepted by wk 8:</b> bring in a contract mobile engineer or agency for P6a while hiring continues.</li>
+        <li><b>No one started by wk 12:</b> web and desktop beta stays at wk 24; store launch moves to wk 32. Integrations stay on their dates.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="phases">
+    <div class="eyebrow">06 · Phases</div>
+    <h2>Phases</h2>
+    <div class="phases">
+      <div class="phase" data-p="0">
+        <span class="when">P0 · Weeks 1–2 · Foundations</span><h3>Repo, identity, design system, realtime skeleton</h3>
+        <ul>
+          <li>Monorepo (<code>apps/web</code>, <code>apps/api</code>, <code>apps/gateway</code>, <code>packages/contracts</code>, <code>packages/ui</code>), CI, preview deploys, seed data matching the prototype’s Acme cast.</li>
+          <li>Port the prototype’s colour tokens (dark and light), type stack (Inter, JetBrains Mono) and density into <code>packages/ui</code>; build Button, Avatar with presence dot, Badge, Tabs, Menu, Dialog, Toggle, Select.</li>
+          <li>Sign-in: company OIDC/SAML, email sign-in with display name, and “Sign in as a test person” behind a dev-only flag.</li>
+          <li>i18n framework with English strings extracted from the boards; language picker on sign-in.</li>
+          <li>WebSocket gateway with auth, heartbeat and the Connected indicator.</li>
+        </ul>
+        <p class="exit"><b>Exit:</b> a signed-in user sees the empty shell (rail + side panel) in both themes.</p>
+      </div>
+      <div class="phase" data-p="1">
+        <span class="when">P1 · Weeks 3–8 · Messaging core</span><h3>Channels, DMs, threads and the composer</h3>
+        <ul>
+          <li>Conversations: public and private channels, 1:1 and group DMs, browse, join, leave, create, archive.</li>
+          <li>Message list: day dividers, New messages marker, edit and delete, reactions, pins, typing indicator, inline code and code blocks, link unfurls with a fetch worker.</li>
+          <li>Composer with rich formatting toolbar, Aa toggle, mentions, emoji picker, file upload with progress, drafts, Enter vs Ctrl+Enter.</li>
+          <li>Thread pane: replies, follow/unfollow, “Also send to channel”, thread summary row in channel.</li>
+          <li>Read state and badges per conversation; side panel sections, Starred, unread bolding; Jump to (Ctrl K).</li>
+          <li>Channel header tabs (Messages, Files &amp; links, Pins) and Channel details (topic, description, managers, members, managers-only posting).</li>
+          <li>Profile card and avatar menu; People and Channels directories with basic search.</li>
+        </ul>
+        <p class="exit"><b>Exit:</b> the team can stop using its current chat tool for one project channel.</p>
+      </div>
+      <div class="phase" data-p="2">
+        <span class="when">P2 · Weeks 7–13 · Meet</span><h3>Live rooms in every conversation</h3>
+        <ul>
+          <li>Weeks 7–8 spike (overlaps P1): LiveKit deployment, TURN, token minting, room-per-conversation model.</li>
+          <li>Start or join a Meet from any channel or DM header; “More ways to join” (audio only, copy link); sidebar Meet list of rooms running now; system message in the conversation when a Meet starts and ends.</li>
+          <li>Call screen: tile grid with active-speaker ring, muted icon, raised-hand ring, call timer, participant count, channel context.</li>
+          <li>Controls: mute, camera, screen share, raise hand, emoji reactions, audio and video device settings, People panel, details, leave.</li>
+          <li>Meet chat panel that reads and writes the conversation itself, so the call’s discussion stays in history.</li>
+          <li>Pre-join device check, join muted, leave on screen lock (from Audio &amp; video preferences).</li>
+          <li>Week 13: live captions in Vietnamese and English from a streaming ASR worker that detects language per speaker, so mixed-language calls caption correctly; toggle per participant.</li>
+        </ul>
+        <p class="exit"><b>Exit (internal dogfood):</b> daily stand-up runs in Toki for two weeks with no fallback to another call tool.</p>
+      </div>
+      <div class="phase" data-p="3">
+        <span class="when">P3 · Weeks 14–17 · Attention and retrieval</span><h3>Activity, notifications, Later, Search, Files</h3>
+        <ul>
+          <li>Activity feed with filters (All, DMs, Mentions, Threads, Reactions), Unread only, Mark all as read.</li>
+          <li>Notification engine: per-channel level, keywords, DND with durations, working hours by time zone, VIP pass-through, hidden people, phone delay after desktop activity, email digest of missed mentions, hide message text.</li>
+          <li>Later: save messages, reminders (in 1 hour, tomorrow at the user’s configured time), recurring reminders, scheduled messages; tabs In progress, Completed, Scheduled, Reminders.</li>
+          <li>Search: Messages, People, Channels, Files tabs; diacritic-insensitive matching (“phat hanh” finds “phát hành”); highlighted hits; newest or best match; excluded channels; in-channel search.</li>
+          <li>Files view: All, My files, Starred (synced to the account), search by name, unavailable state for expired files.</li>
+          <li>Preferences: all 12 tabs wired to the typed preference store.</li>
+        </ul>
+        <p class="exit"><b>Exit:</b> nobody on the dogfood team misses a mention for a week (measured from Activity read receipts).</p>
+      </div>
+      <div class="phase" data-p="4">
+        <span class="when">P4 · Weeks 14–20 · Meet+ (runs alongside P3, led by the media engineer)</span><h3>Recording, guest links, calendar, AI notes</h3>
+        <ul>
+          <li><b>Recording (wk 14–15):</b> LiveKit Egress, composite layout to MP4 in object storage. Everyone sees a recording indicator and a consent notice on join. When the call ends, the file is posted into the conversation and appears under Files. Only the host or a channel manager can start or stop it.</li>
+          <li><b>Guest join link (wk 15–17):</b> a signed link per Meet that expires. Guests type a name, see a pre-join device check and wait in a lobby until a member admits them. They get call chat only, with no workspace access. A link can be revoked from Meet details.</li>
+          <li><b>Calendar scheduling (wk 17–18):</b> choose “Schedule a Meet” from the Meet menu or the <code>/meet</code> command. Connect Google Calendar and Microsoft 365 with OAuth to create the event with the join link and a guest link. The conversation gets a pinned upcoming-Meet card, and a reminder goes out 5 minutes before.</li>
+          <li><b>AI notes (wk 18–20):</b> after the call, the caption transcript goes to Claude, which drafts a summary, decisions and action items in Vietnamese, English, or both side by side. By default the notes use the conversation’s usual language, and each Meet can override it. The result is posted as a thread reply on the Meet’s start message. Action items can be sent to Later with one click. Notes can be turned on or off for each Meet, and the room shows when notes are being taken.</li>
+          <li>New preferences: record by default (off), allow guests in my Meets, connected calendars, AI notes default.</li>
+        </ul>
+        <p class="exit"><b>Exit:</b> a weekly all-hands with two outside guests is scheduled from the calendar, recorded, and its AI notes are posted without manual steps.</p>
+      </div>
+      <div class="phase" data-p="5">
+        <span class="when">P5 · Weeks 19–24 · Beta, essential admin, mobile</span><h3>What an internal rollout needs, then hardening</h3>
+        <ul>
+          <li>Essential admin: Workspace, People and Audit log tabs; roles, deactivate and reactivate, sign out everywhere; channel and <code>@channel</code> permissions; edit window; link previews and blocked domains; invitations by email. SSO accounts are provisioned automatically for company domains.</li>
+          <li>Audit events are written as a SHA-256 hash chain from P0, so the integrity verifier can ship later without a migration.</li>
+          <li>Responsive phone layout in the web app as a fallback; native apps are P6.</li>
+          <li>Classic navigation layout (workspace column, create a workspace), text size, compact list, Match my system theme.</li>
+          <li>Accessibility pass: screen-reader live region for new messages, underline links, reduced motion, image description reminder, keyboard map.</li>
+          <li>Desktop shell (Tauri) with native notifications and screen-lock detection.</li>
+          <li>Load test (1,000 concurrent users, 50-person Meet), security review, backup and restore drill, company beta.</li>
+        </ul>
+        <p class="exit"><b>Exit:</b> company-wide rollout (beta) with an on-call rotation and published SLOs.</p>
+      </div>
+      <div class="phase" data-p="6">
+        <span class="when">P6 · Weeks 12–28 · Native apps and integrations</span><h3>App Store, Play and a public apps platform</h3>
+        <ul>
+          <li><b>Native apps (mobile engineer, wk 12–28):</b> React Native with Expo, sharing <code>packages/contracts</code> and the API client with the web app. Includes the conversation list, channel, thread, DMs, Activity, Later and search screens, offline cache and sending queue, file picker and camera upload.</li>
+          <li><b>Mobile Meet:</b> LiveKit mobile SDK. CallKit (iOS) and ConnectionService (Android) ring for Meets in DMs; picture-in-picture, background audio, captions.</li>
+          <li><b>Push:</b> APNs and FCM through the notification engine from P3, with reply and mark-read actions and the phone delay setting honoured.</li>
+          <li><b>Release:</b> TestFlight and Play internal testing at week 24 for the company beta. Store listings, privacy labels, data-safety forms and review fixes run in weeks 25–28.</li>
+          <li><b>Integrations (wk 22–28):</b> incoming webhooks, bot users with scoped tokens, a public REST API, app slash commands, a signed Events API, interactive message buttons, and OAuth install with admin approval. GitHub, Jira and Google Drive are built on that same API.</li>
+          <li>The audit log records app installs, scope grants and token use. Apps can be disabled per workspace from the Admin console.</li>
+        </ul>
+        <p class="exit"><b>Exit:</b> Toki is live in both stores, and a GitHub pull request posts into <code>#releases</code> with a working Approve button.</p>
+      </div>
+      <div class="phase" data-p="7">
+        <span class="when">Deferred · after the internal beta</span><h3>Compliance and multi-organisation features</h3>
+        <ul>
+          <li>Retention policies with the nightly purge job, legal holds and the “no longer available” file state.</li>
+          <li>JSONL exports and the audit hash-chain verifier.</li>
+          <li>External people and shared channels between workspaces; the multi-workspace switcher and Classic layout’s “Create a workspace”.</li>
+          <li>Pick these up when Toki is offered to a second organisation; the data model already has the fields for them.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="tickets">
+    <div class="eyebrow">07 · Tickets</div>
+    <h2>P0 and P1 tickets</h2>
+    <p>65 tickets for weeks 1–8, each with acceptance criteria, an owner role, dependencies, a target week and the prototype board it implements. Estimates are ideal days; plan about 40% on top for review, bugs and meetings. The same list is committed to the repo as CSV (for Jira, Linear or GitHub import) and Markdown under <code>docs/build-plan/</code>.</p>
+    <div class="facts" id="tk-facts"></div>
+    <div class="filters" role="group" aria-label="Filter tickets">
+      <button type="button" data-tp="all" aria-pressed="true">P0 + P1</button>
+      <button type="button" data-tp="P0" aria-pressed="false">P0 Foundations</button>
+      <button type="button" data-tp="P1" aria-pressed="false">P1 Messaging</button>
+      <label for="tk-owner" style="font-size:13px;color:var(--mu)">Owner</label>
+      <select id="tk-owner" style="font:500 13px var(--font);background:var(--sf);color:var(--ink);border:1px solid var(--ru);border-radius:8px;padding:5px 8px"><option value="all">Everyone</option><option>FS1</option><option>FS2</option><option>FS3</option><option>ME</option><option>OPS</option><option>DS</option></select>
+      <span class="count" id="tk-count"></span>
+    </div>
+    <div class="tbl"><table id="tk" style="min-width:860px">
+      <thead><tr><th>ID</th><th>Ticket and acceptance</th><th>Owner</th><th>Days</th><th>Wk</th><th>After</th><th>Board</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p style="font-size:13px;color:var(--mu)">Owner roles: FS1–FS3 full-stack engineers, ME realtime/media engineer, DS designer, OPS part-time DevOps. The mobile engineer joins in week 9; until then FS3 owns the Expo skeleton (T-008).</p>
+  </section>
+
+  <section id="nfr">
+    <div class="eyebrow">08 · Cross-cutting</div>
+    <h2>Cross-cutting requirements</h2>
+    <div class="grid2">
+      <div class="card"><span class="k">Language &amp; time</span><ul>
+        <li>Vietnamese-first content: NFC normalisation on write, accent-folding in search and mention autocomplete.</li>
+        <li>24-hour clock by default, per-user time zone, local time on profile cards.</li>
+        <li>UI strings in English at launch; Vietnamese UI in P3.</li>
+      </ul></div>
+      <div class="card"><span class="k">Performance targets</span><ul>
+        <li>Message send to remote render under 300 ms p95 in-region.</li>
+        <li>Channel open under 500 ms with 50 messages, virtualised beyond that.</li>
+        <li>Meet join under 3 s after device check; audio under 150 ms one-way in-region.</li>
+      </ul></div>
+      <div class="card"><span class="k">Security</span><ul>
+        <li>TLS everywhere, DTLS-SRTP for media, encrypted object storage.</li>
+        <li>Link safety: warn when link text shows a different address (from Advanced prefs).</li>
+        <li>Rate limits on send, upload, invite; virus scan on upload.</li>
+      </ul></div>
+      <div class="card"><span class="k">Quality</span><ul>
+        <li>Visual regression snapshots of each prototype board in both themes.</li>
+        <li>Playwright end-to-end flows: sign in, post, thread, start Meet, search.</li>
+        <li>Contract tests from the shared Zod schemas.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="risks">
+    <div class="eyebrow">09 · Risks</div>
+    <h2>Risks and open questions</h2>
+    <div class="tbl"><table class="risk">
+      <thead><tr><th>Item</th><th>Why it matters</th><th>Proposed answer</th></tr></thead>
+      <tbody>
+        <tr><td>Bilingual captions and notes</td><td>ASR quality for Vietnamese varies widely, and mixed Vietnamese–English speech (code-switching) is common in tech teams.</td><td>Benchmark two engines on recorded internal calls in both languages in week 10. Ship captions behind a flag if word error rate exceeds 20%. AI notes are built from the transcript, so their quality follows the captions.</td></tr>
+        <tr><td>Four Meet features have no design</td><td>Recording, guest links, calendar and AI notes are in scope but no board covers them.</td><td>The designer draws the recording indicator, guest lobby, schedule dialog and notes card in weeks 11–13, before P4 starts.</td></tr>
+        <tr><td>Consent for recording and AI notes</td><td>Vietnam’s personal data rules (Decree 13/2023) and staff trust both depend on visible consent.</td><td>Indicators always on, a notice on join, opt-out per Meet, recordings and notes kept for a set period. Check with legal in week 12.</td></tr>
+        <tr><td>Guest links as an attack surface</td><td>Anyone with the link can reach the lobby.</td><td>Signed tokens that expire, admission by a member, rate limits, no workspace data exposed to guests.</td></tr>
+        <tr><td>P3 and P4 run in parallel</td><td>Six weeks of overlap with a team of 5–6 is the tightest part of the schedule.</td><td>The media engineer owns P4, and full-stack engineers own P3. If P4 slips, AI notes move to just after the beta.</td></tr>
+        <tr><td>Retention vs. threads and files</td><td>Deleting a thread root while replies remain, and files shared in several channels, need defined rules.</td><td>Delete by message age; keep a tombstone for roots; files expire when their last reference expires.</td></tr>
+        <tr><td>App Store and Play review</td><td>Apple can reject chat apps without blocking, reporting and account deletion, and review can take more than a week per round.</td><td>Build block and report in P3, in-app account deletion in P5, and submit the first build for review in week 22 so there is time for two rejections.</td></tr>
+        <tr><td>Vietnamese data rules</td><td>Hosting in Singapore may need a check against Vietnam’s Cybersecurity Law (Decree 53/2022) and the personal data rules (Decree 13/2023).</td><td>Legal review in week 4. The design lets us add a Vietnam region (for example a local cloud provider) without code changes.</td></tr>
+        <tr><td>Third-party apps and data</td><td>Apps can read messages and post as bots; a malicious app can leak data.</td><td>Least-privilege scopes, admin approval, signed events, per-app rate limits, token use in the audit log, one-click disable.</td></tr>
+        <tr><td>Schedule depends on a hire</td><td>The 28-week date assumes a mobile engineer from week 9.</td><td>Hiring starts in week 0 (see the hiring plan in Timeline). A contractor is the fallback from week 8; if nobody has started by week 12, the store launch moves to week 32.</td></tr>
+        <tr><td>No design for integrations</td><td>No board covers app install, the app directory, bot messages or interactive buttons.</td><td>The designer covers them in weeks 18–21. Built-in commands (<code>/remind</code>, <code>/meet</code>, <code>/status</code>) ship in P3 and prove the command menu first.</td></tr>
+        <tr><td>External and Invitations tabs</td><td>Cross-organisation channels are a large feature behind two tab labels.</td><td>Meet guests arrive in P4 and email invitations in P5; shared channels with other workspaces are deferred.</td></tr>
+        <tr><td>Multi-workspace</td><td>Rail shows a workspace switcher and “Create a workspace”.</td><td>Model workspaces from day one; ship switching in P5.</td></tr>
+        <tr><td>Group call scale</td><td>Tile grid is drawn for 5 people.</td><td>Target 50 in a room with paged tiles and active-speaker layout; larger events are out of scope.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer>Version 6: P0 and P1 broken into 65 tickets. Version 5: integrations kept and the mobile hire confirmed, with a hiring plan. Version 3: round 2 adds native apps, managed hosting, an integrations platform, synced file stars and bilingual captions and notes. Version 2: internal-first, Meet extras added, governance deferred. Source: “Toki UI Prototype” design canvas, 23 boards dated 8 Nov 2026. Feature counts and board references come from the boards’ markup and sample data. Estimates assume the team described in the Timeline section.</footer>
+</div>
+
+<script>
+const F = [
+ ["Shell & navigation","Rail · SidePanel · Classic · JumpTo",[
+  ["Icon rail","Home, DMs, Activity, Files, Later, More and Admin views with unread badges; active view highlight","Rail",0],
+  ["Workspace switcher","Workspace tile at top of rail; Classic layout adds a workspace column and “Create a workspace”. One workspace is enough for internal use","Rail, Classic",7],
+  ["Create menu","Global + button for new message, channel or Meet","Rail",1],
+  ["Theme toggle","Switch light/dark from the rail; dark is default","Rail",0],
+  ["Collapsible side panel","Show or hide the side panel; panel follows the selected view","Rail",1],
+  ["Side panel shortcuts","All unreads, Threads, Meet, Drafts, Saved, Directories, Activity, Files, Starred","SidePanel",1],
+  ["Starred section","Pinned conversations at top of the panel with badges","SidePanel",1],
+  ["Channel list","Unread channels bold with count badge; open channel highlighted; Browse channels","SidePanel",1],
+  ["DM list","Avatars with online dot, unread badges, online-first ordering","SidePanel",1],
+  ["Find a conversation","Filter field at the top of the side panel, plus filter and sort menu","SidePanel",1],
+  ["Connection indicator","Shows the realtime link is connected","SidePanel",0],
+  ["Jump to (Ctrl K)","Keyboard quick switcher for channels and people","JumpTo",1],
+  ["Classic layout","Alternate navigation without the icon rail, chosen in Appearance","Classic",5]]],
+ ["Channels & messages","Main · Channel",[
+  ["Channel header","Name, topic, member avatar stack and count, star, notification settings, details, more","Channel",1],
+  ["Conversation tabs","Messages, Files & links, Pins (with count), Add a tab","Channel",1],
+  ["In-channel search","“Search general” box that expands to show the current query","Channel",3],
+  ["Day dividers & New messages marker","Yesterday/Today separators and a line at the first unread message","Channel",1],
+  ["Reactions","Emoji reactions with counts on any message","Channel",1],
+  ["Pinned messages","Pinned label on messages and a Pins tab","Channel",1],
+  ["Link unfurls","Preview card with title, description and domain","Channel",1],
+  ["Code","Inline code and multi-line code blocks","Channel",1],
+  ["Thread summary","Reply avatars, reply count and last reply time under a root message","Channel",1],
+  ["Typing indicator","“Bob Trần is typing…” at the foot of the list","Channel",1],
+  ["Mentions & channel links","@person and #channel rendered as links, mentions highlighted","Channel",1],
+  ["Compact mode","Denser header and list for narrow panes and phones","Channel",5]]],
+ ["Composer","Composer · Thread",[
+  ["Rich formatting","Bold, italic, strikethrough, link, bulleted and numbered lists, quote, code, code block, with shortcuts","Composer",1],
+  ["Formatting toggle (Aa)","Show or hide the toolbar; markup-only option in preferences","Composer",1],
+  ["Attach files","Upload one or more files into the message","Composer",1],
+  ["Emoji & mentions","Emoji picker and @mention autocomplete","Composer",1],
+  ["Run a command","Slash commands: built-in ones in P3, commands from installed apps in P6","Composer",3],
+  ["Schedule for later","Pick a send time; appears under Later › Scheduled","Composer",3],
+  ["Send key choice","Enter sends by default; Ctrl+Enter mode in preferences","Preferences",1],
+  ["Drafts","Unsent text kept per conversation and listed under Drafts","SidePanel",1]]],
+ ["Threads","Thread",[
+  ["Thread pane","Side pane with root message and replies, opened from the summary row","Thread",1],
+  ["Follow / unfollow","Control thread notifications","Thread",1],
+  ["Also send to channel","Reply in thread and post to the channel at once","Thread",1],
+  ["Threads view","All followed threads in one list","SidePanel",3]]],
+ ["Direct messages","DMs",[
+  ["DM inbox","Card list with avatar, name, time, preview and unread count","DMs",1],
+  ["Find a DM & Unreads filter","Search and filter the DM list","DMs",1],
+  ["Group DMs","Multi-person DMs with stacked avatars","DMs",1],
+  ["New message","Start a DM or group DM","DMs",1],
+  ["Conversation intro","“This is the beginning of your direct messages…” with View profile","DMs",1],
+  ["Meet in DMs","Same Meet button and tabs as channels","DMs",2]]],
+ ["Meet (calls & huddles)","Meet · Channel",[
+  ["Start / join Meet","Meet button in every channel and DM header, “Talk live with voice, video and screen sharing”","Channel",2],
+  ["More ways to join","Secondary join options next to the Meet button","Channel",2],
+  ["Live Meets list","Meet shortcut in the side panel","SidePanel",2],
+  ["Tile grid","Avatar or video tiles with names","Meet",2],
+  ["Active speaker ring","Coloured ring on whoever is speaking","Meet",2],
+  ["Mute & camera","Mute, muted indicator per tile, turn camera on and off","Meet",2],
+  ["Screen share","Share a screen or window","Meet",2],
+  ["Raise hand","Amber ring and hand icon on the tile","Meet",2],
+  ["Reactions","Send an emoji reaction to the room","Meet",2],
+  ["Live captions","Caption strip with speaker names; turn captions on and off","Meet",2],
+  ["Device settings","Audio and video settings menus beside the controls","Meet",2],
+  ["People panel","Roster of participants","Meet",2],
+  ["Meet chat","Chat panel bound to the conversation hosting the call","Meet",2],
+  ["Call header","Timer, conversation name and participant count","Meet",2],
+  ["Meet tools & details","Tools menu, details panel, more options","Meet",2],
+  ["Leave Meet","Leave the room; room ends when empty","Meet",2],
+  ["Join preferences","Join muted, device check before joining, captions on join, leave on screen lock","Preferences",2],
+  ["Meet started notification","Notify when a Meet starts in my channels and DMs","Preferences",2]]],
+ ["Meet additions (not in prototype)","Agreed in scoping",[
+  ["Recording","Record a Meet to storage with a consent banner; the recording is posted into the conversation","New",4],
+  ["Guest join link","Shareable browser link for people outside the workspace, with a lobby where a member admits them","New",4],
+  ["Calendar scheduling","Schedule a Meet from a conversation; Google and Outlook invites carry the join link","New",4],
+  ["AI notes & summary","Summary, decisions and action items from the captions, posted to the thread after the call; action items can go to Later","New",4]]],
+ ["Activity","Activity",[
+  ["Activity feed","Mentions, thread replies, reactions and DMs with snippet, place and time; deep-links to the message","Activity",3],
+  ["Filters","All, Direct messages, Mentions, Threads, Reactions","Activity",3],
+  ["Unread only & Mark all as read","Toggle and bulk action","Activity",3]]],
+ ["Files","Files",[
+  ["Files view","All files, My files, Starred","Files",3],
+  ["File search","Search by name","Files",3],
+  ["File metadata","Size, uploader, time and source channel","Files",3],
+  ["Star a file","Stars saved to the account and synced to every device (the prototype kept them on one device)","Files",3],
+  ["Unavailable files","“This video is no longer available” after retention","Files",7]]],
+ ["Later","Later",[
+  ["Saved items","Save a message to In progress","Later",3],
+  ["Reminders","Reminder tomorrow at 9:00, Remind me in 1 hour","Later",3],
+  ["Complete / reopen","Mark complete, Move back to in progress, Delete","Later",3],
+  ["Scheduled messages","Messages queued to send in a channel at a set time","Later",3],
+  ["Recurring reminders","e.g. “Today 15:00 every weekday”","Later",3]]],
+ ["Directories","People · Channels",[
+  ["People directory","Search by name, title or email; Title, Location and More filters; Most relevant sort; presence","People",1],
+  ["Invite people","Invite by email from the directory","People",5],
+  ["Channel directory","Search by name or description, Any/Joined filter, A to Z sort, member count","Channels",1],
+  ["Channel states","Joined, private, archived badges; Join, Leave, Open","Channels",1],
+  ["Create a channel","From the directory","Channels",1],
+  ["External & Invitations tabs","People outside the workspace and pending invites","People",7]]],
+ ["Search","Search",[
+  ["Global search","Messages, People, Channels, Files tabs","Search",3],
+  ["Highlighted hits","Matched terms highlighted in results","Search",3],
+  ["Sort","Newest first or best match","Search",3],
+  ["Vietnamese matching","Query “phát hành” across content with diacritics","Search",3],
+  ["Leave out of search","Exclude channels unless searched directly","Preferences",3]]],
+ ["Profile & status","Profile",[
+  ["Profile card","Display and full name, title, status with emoji, local time, email, phone","Profile",1],
+  ["Notifications paused badge","Shows when the person is in DND","Profile",3],
+  ["Message, Add to VIPs, Hide","Actions on the card","Profile",3],
+  ["Avatar / workspace menu","Workspace info, Jump to, Browse channels, Invite, Mark all as read, Preferences, Admin console, Sign out","Profile",1],
+  ["Status","Custom status with clear-after options","Preferences",3]]],
+ ["Channel details","ChannelDetails",[
+  ["About","Editable name, topic, description; created by and date","ChannelDetails",1],
+  ["Members","List with manager label, Make manager, Remove, Add people by name or email","ChannelDetails",1],
+  ["Managers-only posting","Announcement-style channels","ChannelDetails",1],
+  ["Make private","One-way conversion, current members only","ChannelDetails",1],
+  ["Archive & leave","Archive the channel or leave it","ChannelDetails",1]]],
+ ["Preferences","Preferences (12 tabs)",[
+  ["Profile & status","Photo, names, title, pronouns, phone, time zone, status","Preferences",1],
+  ["Notifications","DND durations, channel level, keywords, thread replies, Meet start, VIP pass-through, away, Activity extras, reminder time, desktop/email/phone delay, hide text","Preferences",3],
+  ["Availability","Working hours by day, notify only during them","Preferences",3],
+  ["VIPs & hidden people","Priority people and muted people","Preferences",3],
+  ["Sidebar","Show/sort, hide muted, mentions on top, online first, photos, VIP and private sections, icon-only shortcuts","Preferences",3],
+  ["Appearance","Navigation layout, theme incl. match system, text size, compact list","Preferences",5],
+  ["Messages & media","Name display, 24-hour clock, typing, inline media, link previews, shortened links, send key, markup-only","Preferences",1],
+  ["Language & region","UI language and time zone","Preferences",0],
+  ["Accessibility","Underline links, animations, read out new messages, describe-image reminder","Preferences",5],
+  ["Mark as read","Keep unread until Esc","Preferences",3],
+  ["Search","Default sort and excluded channels","Preferences",3],
+  ["Advanced","Spell check, warn on mismatched link text","Preferences",3]]],
+ ["Admin console","Admin",[
+  ["Workspace settings","Link previews, preview images, blocked domains","Admin",5],
+  ["Permissions","Who can create channels, who can use @channel/@here/@everyone, edit window","Admin",5],
+  ["People & roles","Owner, admin, member, guest; deactivate and reactivate","Admin",5],
+  ["Sign out everywhere","Revoke all sessions for a person","Admin",5],
+  ["Audit log","Event log with action filter and CSV/JSONL in P5; hash chain recorded from day one, integrity verifier deferred","Admin",5],
+  ["Retention","Org-wide days or keep forever; nightly purge; Run now","Admin",7],
+  ["Legal holds","Per-conversation holds with note; suspend retention","Admin",7],
+  ["Export","Zip of JSONL per conversation plus manifest; public or everything; job list with download","Admin",7]]],
+ ["Sign-in","SignIn",[
+  ["Company account","SSO with the company identity provider","SignIn",0],
+  ["Test personas","Sign in as Owner, Member or Admin sample people (dev only)","SignIn",0],
+  ["Email sign-in","Any email plus display name","SignIn",0],
+  ["Language picker","Choose UI language before sign-in","SignIn",0]]],
+ ["Phone","PhoneList · PhoneChat",[
+  ["Phone conversation list","Native iOS and Android list screen with tab bar for Home, DMs, Activity, Later","PhoneList",6],
+  ["Phone conversation","Native channel and thread screens with the composer and file picker","PhoneChat",6],
+  ["Native push","APNs and FCM with notification actions (reply, mark read) and the same rules as desktop","New",6],
+  ["Meet on mobile","LiveKit mobile SDK, CallKit / ConnectionService ring for Meets in DMs, picture-in-picture, background audio","New",6],
+  ["Store release","TestFlight and Play internal testing at week 24; public App Store and Play listing at week 28","New",6],
+  ["Responsive web phone layout","The web app still works at 390 px for people who don’t install the app","PhoneList",5]]],
+ ["Integrations platform (agreed add-on)","Not in prototype",[
+  ["Incoming webhooks","Post into a channel from any system with a secret URL","New",6],
+  ["Bot users & API tokens","Apps act as a bot member with scoped tokens and a public REST API","New",6],
+  ["App slash commands","Apps register commands that appear in the composer’s Run a command menu","New",6],
+  ["Events API","Signed outgoing webhooks for messages, reactions, member changes and Meet start/end","New",6],
+  ["Interactive messages","Buttons and select menus in app messages, with callbacks to the app","New",6],
+  ["App directory & install","OAuth install per workspace, scopes shown to the admin, admin approval and uninstall","New",6],
+  ["First-party apps","GitHub, Jira and Google Drive built on the same public API as a proof of the platform","New",6]]]
+];
+const PH = ["P0","P1","P2","P3","P4","P5","P6","Later"];
+const tb = document.querySelector('#inv tbody');
+let total = 0;
+F.forEach(([area, src, rows]) => {
+  const h = document.createElement('tr'); h.className = 'area'; h.dataset.area = area;
+  h.innerHTML = `<td colspan="4">${area}<small>${src}</small></td>`; tb.appendChild(h);
+  rows.forEach(([n, d, b, p]) => {
+    total++;
+    const tr = document.createElement('tr'); tr.dataset.p = p; tr.dataset.area = area;
+    tr.innerHTML = `<td><b>${n}</b></td><td>${d}</td><td class="src">${b}</td><td class="ph-cell"><span class="ph" data-p="${p}">${PH[p]}</span></td>`;
+    tb.appendChild(tr);
+  });
+});
+const count = document.getElementById('count');
+function apply(f){
+  let shown = 0; const areas = new Set();
+  tb.querySelectorAll('tr:not(.area)').forEach(tr => {
+    const ok = f === 'all' || tr.dataset.p === f; tr.hidden = !ok;
+    if (ok){ shown++; areas.add(tr.dataset.area); }
+  });
+  tb.querySelectorAll('tr.area').forEach(tr => tr.hidden = !areas.has(tr.dataset.area));
+  count.textContent = `${shown} of ${total} features`;
+  document.querySelectorAll('.filters button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === f)));
+}
+document.querySelectorAll('.filters button').forEach(b => b.addEventListener('click', () => apply(b.dataset.f)));
+apply('all');
+
+// Timeline
+const T = [["P0 Foundations",0,1,2],["P1 Messaging",1,3,8],["P2 Meet",2,7,13],["P3 Attention",3,14,18],["P4 Meet+",4,14,20],["P5 Beta & admin",5,19,24],["P6a Native apps",6,12,28],["P6b Integrations",6,22,28]];
+const tl = document.getElementById('tl');
+let html = '<div></div>';
+for (let w = 1; w <= 28; w++) html += `<div class="wk">${w}</div>`;
+T.forEach(([l, p, s, e]) => {
+  html += `<div class="lbl">${l}</div><div class="bar" data-p="${p}" style="grid-column:${s+1}/${e+2}">wk ${s}–${e}</div>`;
+});
+html += '<div class="ms"><span><b>Wk 8</b> · one project channel moves to Toki</span><span><b>Wk 13</b> · internal dogfood: chat + Meet</span><span><b>Wk 18</b> · chat feature-complete</span><span><b>Wk 20</b> · Meet+ complete: recording, guests, calendar, AI notes</span><span><b>Wk 24</b> · company beta on web, desktop, TestFlight and Play internal</span><span><b>Wk 28</b> · App Store and Play launch, integrations platform live</span></div>';
+tl.innerHTML = html;
+</script>
+<script>
+(function(){
+const TK = [{"id": "T-001", "phase": "P0", "epic": "Repo & delivery", "title": "Monorepo scaffold", "acceptance": "pnpm workspaces + Turborepo with apps/web, apps/api, apps/gateway, apps/mobile (placeholder), packages/contracts, packages/ui, packages/config. TypeScript strict, ESLint, Prettier. `pnpm build` and `pnpm test` pass from the root and each app boots locally.", "estimate_days": 2, "owner": "FS1", "depends_on": "", "week": 1, "board": ""}, {"id": "T-002", "phase": "P0", "epic": "Repo & delivery", "title": "Local dev stack", "acceptance": "Docker Compose for Postgres 16, Redis 7, MinIO, Mailpit and a LiveKit dev server. `pnpm dev` starts everything; README steps work on a fresh machine.", "estimate_days": 1, "owner": "OPS", "depends_on": "T-001", "week": 1, "board": ""}, {"id": "T-003", "phase": "P0", "epic": "Repo & delivery", "title": "CI pipeline", "acceptance": "GitHub Actions: lint, typecheck, unit tests, build, Playwright smoke, dependency cache. Required check on main.", "estimate_days": 1.5, "owner": "OPS", "depends_on": "T-001", "week": 1, "board": ""}, {"id": "T-004", "phase": "P0", "epic": "Repo & delivery", "title": "Staging and PR previews in Singapore", "acceptance": "Cloud account in the Singapore region, Kubernetes staging namespace, managed Postgres, Redis and S3, secrets manager. Every PR gets a preview URL for the web app.", "estimate_days": 3, "owner": "OPS", "depends_on": "T-003", "week": 2, "board": ""}, {"id": "T-005", "phase": "P0", "epic": "Repo & delivery", "title": "Migrations and seed data", "acceptance": "Drizzle migrations run in CI and on deploy. Seed matches the prototype: Acme workspace; Alice, Bob, Chi, Dũng, Hà and the guest Khách Mời; #general, #design, #du-an-alpha (private), #releases.", "estimate_days": 1.5, "owner": "FS2", "depends_on": "T-002", "week": 1, "board": ""}, {"id": "T-006", "phase": "P0", "epic": "Repo & delivery", "title": "Observability baseline", "acceptance": "Structured JSON logs, OpenTelemetry traces across api and gateway, Sentry for web and api, /healthz and /readyz endpoints, a staging dashboard.", "estimate_days": 1.5, "owner": "ME", "depends_on": "T-004", "week": 2, "board": ""}, {"id": "T-007", "phase": "P0", "epic": "Repo & delivery", "title": "Apple and Google developer accounts", "acceptance": "Apple Developer (organisation) and Google Play accounts, bundle IDs, APNs key, Firebase project for FCM. Started in week 1 because approval can take two weeks.", "estimate_days": 0.5, "owner": "OPS", "depends_on": "", "week": 1, "board": ""}, {"id": "T-008", "phase": "P0", "epic": "Repo & delivery", "title": "Expo app skeleton and build lanes", "acceptance": "Expo app in apps/mobile importing packages/contracts and the API client; EAS internal builds for iOS and Android from CI. Placeholder sign-in screen. Prepared before the mobile hire joins.", "estimate_days": 3, "owner": "FS3", "depends_on": "T-001, T-007", "week": 2, "board": "PhoneList"}, {"id": "T-010", "phase": "P0", "epic": "Identity", "title": "Identity schema with tenant isolation", "acceptance": "Tables workspace, user, membership (owner/admin/member/guest), session, device. Postgres row-level security on workspace_id; a test proves one workspace cannot read another's rows.", "estimate_days": 2, "owner": "FS2", "depends_on": "T-005", "week": 1, "board": ""}, {"id": "T-011", "phase": "P0", "epic": "Identity", "title": "Company sign-in (OIDC, then SAML)", "acceptance": "OIDC for Google Workspace and Microsoft Entra, SAML via a maintained library. Users from verified company domains are provisioned on first sign-in. Audit event on every sign-in.", "estimate_days": 3, "owner": "FS2", "depends_on": "T-010", "week": 2, "board": "SignIn"}, {"id": "T-012", "phase": "P0", "epic": "Identity", "title": "Email sign-in", "acceptance": "Magic link valid 15 minutes, single use; display name asked on first sign-in. Emails go to Mailpit locally.", "estimate_days": 1.5, "owner": "FS2", "depends_on": "T-010", "week": 2, "board": "SignIn"}, {"id": "T-013", "phase": "P0", "epic": "Identity", "title": "Test personas (dev only)", "acceptance": "“Sign in as a test person” for Owner, Member and Admin seeds behind DEV_PERSONAS. A test fails the build if the route exists in a production bundle.", "estimate_days": 0.5, "owner": "FS2", "depends_on": "T-005", "week": 2, "board": "SignIn"}, {"id": "T-014", "phase": "P0", "epic": "Identity", "title": "Sessions and revocation", "acceptance": "httpOnly, SameSite=Lax cookie sessions with rotation; device record; API to list and revoke all sessions (used later by “Sign out everywhere”). Revocation closes open WebSockets within 5 s.", "estimate_days": 1.5, "owner": "FS2", "depends_on": "T-010, T-040", "week": 2, "board": ""}, {"id": "T-015", "phase": "P0", "epic": "Identity", "title": "Sign-in screen", "acceptance": "Built to the SignIn board: company account, test personas, email + display name, language picker. Error states for expired link and unknown domain.", "estimate_days": 1.5, "owner": "FS3", "depends_on": "T-011, T-012, T-021", "week": 2, "board": "SignIn"}, {"id": "T-016", "phase": "P0", "epic": "Identity", "title": "Hash-chained audit writer", "acceptance": "Append-only audit_event with prev_hash and SHA-256 hash, written in the same transaction as the change. Covers sign-in, session revoke, role change. Verifier ships later; the chain starts now.", "estimate_days": 1.5, "owner": "FS3", "depends_on": "T-010", "week": 2, "board": "Admin"}, {"id": "T-020", "phase": "P0", "epic": "Design system", "title": "Design tokens and themes", "acceptance": "Port the prototype's dark and light tokens, Inter and JetBrains Mono, comfortable and compact density. Theme setting: match system, light, dark; toggle in the rail.", "estimate_days": 1.5, "owner": "DS", "depends_on": "T-001", "week": 1, "board": "Main"}, {"id": "T-021", "phase": "P0", "epic": "Design system", "title": "Core components", "acceptance": "Button, IconButton, Avatar (hue initials + presence dot), Badge, Tabs, Menu, Dialog, Toggle, Select, Input, Tooltip in packages/ui with Storybook. axe accessibility checks in CI.", "estimate_days": 4, "owner": "FS1", "depends_on": "T-020", "week": 1, "board": ""}, {"id": "T-022", "phase": "P0", "epic": "Design system", "title": "App shell", "acceptance": "Icon rail + side panel + main pane, collapsible side panel, routes for Home, DMs, Activity, Files, Later; active view styling and badges slots.", "estimate_days": 2, "owner": "FS1", "depends_on": "T-021", "week": 2, "board": "Rail"}, {"id": "T-023", "phase": "P0", "epic": "Design system", "title": "Visual regression harness", "acceptance": "Playwright screenshots of the shell and components in both themes, compared on every PR.", "estimate_days": 1, "owner": "FS1", "depends_on": "T-022, T-003", "week": 2, "board": ""}, {"id": "T-030", "phase": "P0", "epic": "Language", "title": "i18n framework", "acceptance": "ICU message catalogs, English strings extracted from the boards, Vietnamese catalog scaffolded. Locale-aware dates with 24-hour default and per-user time zone.", "estimate_days": 1.5, "owner": "FS3", "depends_on": "T-001", "week": 1, "board": ""}, {"id": "T-031", "phase": "P0", "epic": "Language", "title": "Vietnamese text utilities", "acceptance": "NFC normalisation on write; accent folding for search and autocomplete (“phat hanh” matches “phát hành”, đ → d). Shared in packages/contracts with unit tests.", "estimate_days": 1, "owner": "FS3", "depends_on": "T-001", "week": 1, "board": "Search"}, {"id": "T-040", "phase": "P0", "epic": "Realtime", "title": "WebSocket gateway", "acceptance": "Session-authenticated WebSocket, heartbeat, client reconnect with backoff, Redis pub/sub fan-out to user and conversation channels. Horizontal scale proven with two gateway pods.", "estimate_days": 3, "owner": "ME", "depends_on": "T-002", "week": 1, "board": ""}, {"id": "T-041", "phase": "P0", "epic": "Realtime", "title": "Event envelope and sequence numbers", "acceptance": "Typed event contracts; per-conversation seq; client resumes from last seq and fetches gaps over REST, so no message is lost across reconnects.", "estimate_days": 2, "owner": "ME", "depends_on": "T-040", "week": 2, "board": ""}, {"id": "T-042", "phase": "P0", "epic": "Realtime", "title": "Connection indicator", "acceptance": "“Connected” state in the side panel; offline banner and reconnecting state.", "estimate_days": 0.5, "owner": "FS1", "depends_on": "T-040, T-022", "week": 2, "board": "SidePanel"}, {"id": "T-100", "phase": "P1", "epic": "Conversations", "title": "Conversation and membership API", "acceptance": "Kinds public, private, dm, group_dm; create, update, join, leave; member role manager. Permission checks for private channels.", "estimate_days": 2, "owner": "FS2", "depends_on": "T-010", "week": 3, "board": "Channels"}, {"id": "T-101", "phase": "P1", "epic": "Conversations", "title": "Create a channel", "acceptance": "Dialog with name (lowercase, hyphens, Vietnamese folded to a slug), private toggle, description. Audit event channel.create.", "estimate_days": 1, "owner": "FS3", "depends_on": "T-100", "week": 3, "board": "Channels"}, {"id": "T-102", "phase": "P1", "epic": "Conversations", "title": "Channel directory", "acceptance": "Search by name or description, Any/Only joined, A to Z, member counts, Joined/Private/Archived badges, Join, Leave, Open.", "estimate_days": 2, "owner": "FS3", "depends_on": "T-100, T-031", "week": 4, "board": "Channels"}, {"id": "T-103", "phase": "P1", "epic": "Conversations", "title": "DMs and group DMs", "acceptance": "Open-or-create 1:1 DM; group DMs up to 8 people; New message picker; DM inbox with previews and unread counts; intro block with View profile.", "estimate_days": 2.5, "owner": "FS2", "depends_on": "T-100", "week": 4, "board": "DMs"}, {"id": "T-104", "phase": "P1", "epic": "Conversations", "title": "Make private and archive", "acceptance": "One-way private conversion with in-page confirmation; archive makes a channel read-only and hides it from the sidebar. Both audited.", "estimate_days": 1, "owner": "FS2", "depends_on": "T-100, T-016", "week": 7, "board": "ChannelDetails"}, {"id": "T-110", "phase": "P1", "epic": "Messages", "title": "Message model and send API", "acceptance": "Rich-text JSON (ProseMirror schema shared in contracts), idempotency key, seq assignment, per-user rate limit, message.created event.", "estimate_days": 2, "owner": "FS2", "depends_on": "T-100, T-041", "week": 3, "board": "Channel"}, {"id": "T-111", "phase": "P1", "epic": "Messages", "title": "Message list", "acceptance": "Virtualised list, day dividers, grouping of consecutive messages, load older, jump to latest. 50-message channel opens under 500 ms.", "estimate_days": 3, "owner": "FS1", "depends_on": "T-110", "week": 3, "board": "Channel"}, {"id": "T-112", "phase": "P1", "epic": "Messages", "title": "Optimistic send and failures", "acceptance": "Pending and failed states, retry and discard, ordering preserved when sends resolve out of order.", "estimate_days": 1, "owner": "FS1", "depends_on": "T-111", "week": 4, "board": "Channel"}, {"id": "T-113", "phase": "P1", "epic": "Messages", "title": "Edit and delete", "acceptance": "Edit window from workspace setting (default no limit), “edited” label, delete leaves a tombstone when the message has replies.", "estimate_days": 1.5, "owner": "FS2", "depends_on": "T-110", "week": 5, "board": "Channel"}, {"id": "T-114", "phase": "P1", "epic": "Messages", "title": "Reactions", "acceptance": "Add and remove, counts, who-reacted tooltip, quick reactions; reaction events.", "estimate_days": 1.5, "owner": "FS3", "depends_on": "T-110, T-132", "week": 5, "board": "Channel"}, {"id": "T-115", "phase": "P1", "epic": "Messages", "title": "Pins", "acceptance": "Pin and unpin, Pinned label on the message, Pins tab with count.", "estimate_days": 1, "owner": "FS3", "depends_on": "T-110", "week": 6, "board": "Channel"}, {"id": "T-116", "phase": "P1", "epic": "Messages", "title": "Mentions and channel links", "acceptance": "@person, @channel, @here, @everyone (permission hook), #channel links; own mentions highlighted.", "estimate_days": 1.5, "owner": "FS3", "depends_on": "T-110", "week": 5, "board": "Channel"}, {"id": "T-117", "phase": "P1", "epic": "Messages", "title": "Code formatting", "acceptance": "Inline code and code blocks in the monospace face with a copy button.", "estimate_days": 0.5, "owner": "FS1", "depends_on": "T-111", "week": 5, "board": "Channel"}, {"id": "T-118", "phase": "P1", "epic": "Messages", "title": "Link unfurls", "acceptance": "Worker fetches Open Graph data with SSRF protection and a 3 s timeout, caches results, skips blocked domains; preview card with title, description and domain.", "estimate_days": 2.5, "owner": "FS2", "depends_on": "T-110", "week": 6, "board": "Channel"}, {"id": "T-119", "phase": "P1", "epic": "Messages", "title": "Typing indicator", "acceptance": "Throttled typing events through Redis, 6 s expiry, “X is typing…” line; respects the “Show when people are typing” preference.", "estimate_days": 1, "owner": "ME", "depends_on": "T-041", "week": 4, "board": "Channel"}, {"id": "T-120", "phase": "P1", "epic": "Messages", "title": "Presence", "acceptance": "Online and away from gateway heartbeats and idle detection; presence dots everywhere avatars appear; online-first DM ordering.", "estimate_days": 1.5, "owner": "ME", "depends_on": "T-040", "week": 4, "board": "SidePanel"}, {"id": "T-130", "phase": "P1", "epic": "Composer", "title": "Composer editor", "acceptance": "Tiptap editor on the shared schema: bold, italic, strikethrough, link, bulleted and numbered lists, quote, code, code block, with keyboard shortcuts; Aa toggle hides the toolbar.", "estimate_days": 3, "owner": "FS1", "depends_on": "T-110", "week": 3, "board": "Composer"}, {"id": "T-131", "phase": "P1", "epic": "Composer", "title": "Mention and channel autocomplete", "acceptance": "@ and # pickers, accent-insensitive, members ranked first, keyboard navigation.", "estimate_days": 1.5, "owner": "FS1", "depends_on": "T-130, T-031", "week": 4, "board": "Composer"}, {"id": "T-132", "phase": "P1", "epic": "Composer", "title": "Emoji picker", "acceptance": "Search, recently used, skin tone; shared by composer and reactions.", "estimate_days": 1, "owner": "FS3", "depends_on": "T-021", "week": 4, "board": "Composer"}, {"id": "T-133", "phase": "P1", "epic": "Composer", "title": "Send key setting", "acceptance": "Enter sends by default; “Ctrl+Enter sends; Enter starts a new line” option.", "estimate_days": 0.5, "owner": "FS1", "depends_on": "T-130, T-180", "week": 6, "board": "Preferences"}, {"id": "T-134", "phase": "P1", "epic": "Composer", "title": "Drafts", "acceptance": "Unsent text saved per conversation on the server, restored on any device, listed under Drafts.", "estimate_days": 1, "owner": "FS3", "depends_on": "T-130", "week": 6, "board": "SidePanel"}, {"id": "T-140", "phase": "P1", "epic": "Files", "title": "Upload pipeline", "acceptance": "Presigned S3 uploads with progress, size limit, MIME sniffing, ClamAV scan job, image thumbnails and video posters.", "estimate_days": 3, "owner": "FS2", "depends_on": "T-004", "week": 4, "board": "Composer"}, {"id": "T-141", "phase": "P1", "epic": "Files", "title": "Attachments in messages", "acceptance": "Inline images and video per preference, file cards with size and type, Files & links tab per conversation.", "estimate_days": 1.5, "owner": "FS3", "depends_on": "T-140, T-111", "week": 5, "board": "Channel"}, {"id": "T-150", "phase": "P1", "epic": "Threads", "title": "Thread model and summary", "acceptance": "thread_root_id, reply count, last reply time and participant avatars on the root; thread.replied event.", "estimate_days": 1.5, "owner": "FS2", "depends_on": "T-110", "week": 5, "board": "Channel"}, {"id": "T-151", "phase": "P1", "epic": "Threads", "title": "Thread pane", "acceptance": "Built to the Thread board: root and replies, reply composer, “Also send to channel”.", "estimate_days": 2, "owner": "FS1", "depends_on": "T-150, T-130", "week": 6, "board": "Thread"}, {"id": "T-152", "phase": "P1", "epic": "Threads", "title": "Follow and unfollow", "acceptance": "Auto-follow when you post or are mentioned; manual Follow/Unfollow in the pane.", "estimate_days": 0.5, "owner": "FS2", "depends_on": "T-150", "week": 6, "board": "Thread"}, {"id": "T-160", "phase": "P1", "epic": "Read state & navigation", "title": "Read state and unread counts", "acceptance": "last_read_seq per member, unread and mention counts, mark read on view, “New messages” divider, counts synced across devices.", "estimate_days": 2, "owner": "ME", "depends_on": "T-041, T-111", "week": 5, "board": "Channel"}, {"id": "T-161", "phase": "P1", "epic": "Read state & navigation", "title": "Side panel", "acceptance": "Starred, Channels and Direct messages sections; unread bold + badge; star and unstar; Find a conversation; filter and sort menu.", "estimate_days": 2.5, "owner": "FS3", "depends_on": "T-022, T-160", "week": 5, "board": "SidePanel"}, {"id": "T-162", "phase": "P1", "epic": "Read state & navigation", "title": "Side panel shortcuts", "acceptance": "All unreads, Threads (followed threads list), Drafts and Directories entries.", "estimate_days": 1, "owner": "FS3", "depends_on": "T-161", "week": 7, "board": "SidePanel"}, {"id": "T-163", "phase": "P1", "epic": "Read state & navigation", "title": "Jump to (Ctrl K)", "acceptance": "Quick switcher over channels and people, fuzzy and accent-insensitive, recent first, full keyboard support.", "estimate_days": 1.5, "owner": "FS1", "depends_on": "T-031, T-100", "week": 6, "board": "JumpTo"}, {"id": "T-164", "phase": "P1", "epic": "Read state & navigation", "title": "Channel header", "acceptance": "Name, topic, member stack and count, star, notification-setting stub, Messages / Files & links / Pins tabs, Meet button placeholder.", "estimate_days": 1.5, "owner": "FS1", "depends_on": "T-100", "week": 4, "board": "Channel"}, {"id": "T-170", "phase": "P1", "epic": "People & profile", "title": "Profile fields", "acceptance": "Display name, full name, title, pronouns, phone, time zone, photo upload with crop.", "estimate_days": 1.5, "owner": "FS3", "depends_on": "T-010, T-140", "week": 6, "board": "Preferences"}, {"id": "T-171", "phase": "P1", "epic": "People & profile", "title": "Profile card", "acceptance": "Popover from any avatar: names, title, local time, email, phone, Message action.", "estimate_days": 1, "owner": "FS3", "depends_on": "T-170", "week": 7, "board": "Profile"}, {"id": "T-172", "phase": "P1", "epic": "People & profile", "title": "Avatar and workspace menu", "acceptance": "Workspace info, Jump to, Browse channels, Preferences, Sign out wired; Admin console item for admins only.", "estimate_days": 0.5, "owner": "FS1", "depends_on": "T-022", "week": 7, "board": "Profile"}, {"id": "T-173", "phase": "P1", "epic": "People & profile", "title": "People directory", "acceptance": "Search by name, title or email; Title and Location filters; presence; Most relevant sort.", "estimate_days": 1.5, "owner": "FS2", "depends_on": "T-170, T-031", "week": 7, "board": "People"}, {"id": "T-174", "phase": "P1", "epic": "People & profile", "title": "Channel details", "acceptance": "About (name, topic, description), member list, Make manager, Remove, Add people, “Only channel managers can post” enforced by the API, Leave.", "estimate_days": 2.5, "owner": "FS2", "depends_on": "T-100, T-104", "week": 7, "board": "ChannelDetails"}, {"id": "T-180", "phase": "P1", "epic": "Preferences", "title": "Preferences store and Settings dialog", "acceptance": "Typed preference schema in contracts, one row per user, synced live. Settings dialog with all 12 tabs; Profile & status and Messages & media wired, the rest labelled as coming later.", "estimate_days": 2, "owner": "FS3", "depends_on": "T-021", "week": 5, "board": "Preferences"}, {"id": "T-190", "phase": "P1", "epic": "Meet spike", "title": "LiveKit on staging", "acceptance": "LiveKit with TURN on staging, token endpoint, one room per conversation, two-person call on a test page from two networks.", "estimate_days": 4, "owner": "ME", "depends_on": "T-004", "week": 7, "board": "Meet"}, {"id": "T-195", "phase": "P1", "epic": "Quality", "title": "End-to-end flows", "acceptance": "Playwright: sign in, create channel, post, react, reply in thread, DM, upload a file. Runs on every PR in under 8 minutes.", "estimate_days": 2, "owner": "FS1", "depends_on": "T-151, T-141", "week": 8, "board": ""}, {"id": "T-196", "phase": "P1", "epic": "Quality", "title": "Load smoke test", "acceptance": "200 simulated clients across 10 channels; send-to-render p95 under 300 ms on staging; report filed.", "estimate_days": 1.5, "owner": "ME", "depends_on": "T-160", "week": 8, "board": ""}, {"id": "T-197", "phase": "P1", "epic": "Quality", "title": "Week 8 pilot in #du-an-alpha", "acceptance": "Move one project channel onto Toki for real work; collect issues in a feedback log; triage into P2/P3.", "estimate_days": 0.5, "owner": "DS", "depends_on": "T-195", "week": 8, "board": ""}];
+const tb = document.querySelector('#tk tbody');
+const esc = t => String(t).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/`([^`]+)`/g,'<code>$1</code>');
+let ep = null;
+TK.forEach(t => {
+  const key = t.phase + '|' + t.epic;
+  if (key !== ep) { ep = key; const h = document.createElement('tr'); h.className = 'area'; h.dataset.phase = t.phase; h.dataset.epic = t.epic;
+    h.innerHTML = `<td colspan="7">${esc(t.epic)}<small>${t.phase}</small></td>`; tb.appendChild(h); }
+  const tr = document.createElement('tr'); tr.dataset.phase = t.phase; tr.dataset.owner = t.owner; tr.dataset.epic = t.epic;
+  tr.innerHTML = `<td class="tk-id">${t.id}</td><td><b>${esc(t.title)}</b><span class="tk-ac">${esc(t.acceptance)}</span></td><td class="src">${t.owner}</td><td class="src">${t.estimate_days}</td><td class="src">${t.week}</td><td class="src">${esc(t.depends_on||'—')}</td><td class="src">${esc(t.board||'—')}</td>`;
+  tb.appendChild(tr);
+});
+const sum = (f) => TK.filter(f).reduce((a,t)=>a+t.estimate_days,0);
+const n = (f) => TK.filter(f).length;
+document.getElementById('tk-facts').innerHTML =
+  `<div><b>${n(t=>t.phase==='P0')}</b><span>P0 tickets · ${sum(t=>t.phase==='P0')} days</span></div>`+
+  `<div><b>${n(t=>t.phase==='P1')}</b><span>P1 tickets · ${sum(t=>t.phase==='P1')} days</span></div>`+
+  `<div><b>${Math.max(...['FS1','FS2','FS3','ME'].map(o=>sum(t=>t.phase==='P0'&&t.owner===o)))} / 10</b><span>busiest person in P0 (days / working days)</span></div>`+
+  `<div><b>${Math.max(...['FS1','FS2','FS3','ME'].map(o=>sum(t=>t.phase==='P1'&&t.owner===o)))} / 30</b><span>busiest person in P1 (days / working days)</span></div>`;
+let ph = 'all', ow = 'all';
+function apply(){
+  let shown = 0, days = 0; const keys = new Set();
+  tb.querySelectorAll('tr:not(.area)').forEach(tr => {
+    const ok = (ph==='all'||tr.dataset.phase===ph) && (ow==='all'||tr.dataset.owner===ow);
+    tr.hidden = !ok; if (ok){ shown++; keys.add(tr.dataset.phase+'|'+tr.dataset.epic); }
+  });
+  TK.forEach(t => { if ((ph==='all'||t.phase===ph)&&(ow==='all'||t.owner===ow)) days += t.estimate_days; });
+  tb.querySelectorAll('tr.area').forEach(tr => tr.hidden = !keys.has(tr.dataset.phase+'|'+tr.dataset.epic));
+  document.getElementById('tk-count').textContent = `${shown} tickets · ${days} days`;
+  document.querySelectorAll('[data-tp]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tp===ph)));
+}
+document.querySelectorAll('[data-tp]').forEach(b => b.addEventListener('click', () => { ph = b.dataset.tp; apply(); }));
+document.getElementById('tk-owner').addEventListener('change', e => { ow = e.target.value; apply(); });
+apply();
+})();
+</script>
+
+
+</html>

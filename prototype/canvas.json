@@ -1,0 +1,33 @@
+{"v":3,"createdOnFiles":{"v":1,"at":"2026-11-08T12:00:00Z"},"title":"Toki UI Prototype","launch":{"view":"canvas"},"pages":[],"boards":{
+"Main.dc.html":{"x":0,"y":0,"w":1440,"h":900,"title":"Home · #general","is_interactive":true},
+"Thread.dc.html":{"x":1520,"y":0,"w":1440,"h":900,"title":"Thread pane","is_interactive":true},
+"DMs.dc.html":{"x":3040,"y":0,"w":1440,"h":900,"title":"DMs","is_interactive":true},
+"Activity.dc.html":{"x":4560,"y":0,"w":1440,"h":900,"title":"Activity","is_interactive":true},
+"Files.dc.html":{"x":0,"y":1200,"w":1440,"h":900,"title":"Files","is_interactive":true},
+"Later.dc.html":{"x":1520,"y":1200,"w":1440,"h":900,"title":"Later","is_interactive":true},
+"People.dc.html":{"x":3040,"y":1200,"w":1440,"h":900,"title":"Directories · People","is_interactive":true},
+"Channels.dc.html":{"x":4560,"y":1200,"w":1440,"h":900,"title":"Directories · Channels","is_interactive":true},
+"Search.dc.html":{"x":0,"y":2400,"w":1440,"h":900,"title":"Search results","is_interactive":true},
+"JumpTo.dc.html":{"x":1520,"y":2400,"w":1440,"h":900,"title":"Jump to (Ctrl K)","is_interactive":true},
+"Preferences.dc.html":{"x":3040,"y":2400,"w":1440,"h":900,"title":"Preferences","is_interactive":true},
+"Profile.dc.html":{"x":4560,"y":2400,"w":1440,"h":900,"title":"Profile card & avatar menu","is_interactive":true},
+"ChannelDetails.dc.html":{"x":0,"y":3600,"w":1440,"h":900,"title":"Channel details","is_interactive":true},
+"Meet.dc.html":{"x":1520,"y":3600,"w":1440,"h":900,"title":"Meet (call)","is_interactive":true},
+"Classic.dc.html":{"x":3040,"y":3600,"w":1440,"h":900,"title":"Classic layout","is_interactive":true},
+"Admin.dc.html":{"x":4560,"y":3600,"w":1440,"h":900,"title":"Admin console","is_interactive":true},
+"SignIn.dc.html":{"x":0,"y":4800,"w":1440,"h":900,"title":"Sign in","is_interactive":true},
+"PhoneList.dc.html":{"x":1520,"y":4800,"w":390,"h":844,"title":"Phone · conversation list","is_interactive":true},
+"PhoneChat.dc.html":{"x":3040,"y":4800,"w":390,"h":844,"title":"Phone · conversation","is_interactive":true},
+"Rail.dc.html":{"x":0,"y":6000,"w":54,"h":900,"title":"Part · Icon rail","is_interactive":true},
+"SidePanel.dc.html":{"x":1520,"y":6000,"w":280,"h":900,"title":"Part · Home side panel","is_interactive":true},
+"Channel.dc.html":{"x":3040,"y":6000,"w":1106,"h":900,"title":"Part · Channel view","is_interactive":true},
+"Composer.dc.html":{"x":4560,"y":6000,"w":700,"h":106,"title":"Part · Message composer","is_interactive":true}
+},"order":["Main.dc.html","Thread.dc.html","DMs.dc.html","Activity.dc.html","Files.dc.html","Later.dc.html","People.dc.html","Channels.dc.html","Search.dc.html","JumpTo.dc.html","Preferences.dc.html","Profile.dc.html","ChannelDetails.dc.html","Meet.dc.html","Classic.dc.html","Admin.dc.html","SignIn.dc.html","PhoneList.dc.html","PhoneChat.dc.html","Rail.dc.html","SidePanel.dc.html","Channel.dc.html","Composer.dc.html"],
+"notes":{
+"n1":{"kind":"title1","text":"Core","x":0,"y":-260,"maxW":5920},
+"n2":{"kind":"title1","text":"Directories & tools","x":0,"y":940,"maxW":5920},
+"n3":{"kind":"title1","text":"Overlays & settings","x":0,"y":2140,"maxW":5920},
+"n4":{"kind":"title1","text":"Calls, Admin & variants","x":0,"y":3340,"maxW":5920},
+"n5":{"kind":"title1","text":"Sign-in & phone","x":0,"y":4540,"maxW":5920},
+"n6":{"kind":"title1","text":"Shared parts (imported by the screens above)","x":0,"y":5740,"maxW":5920}
+},"designSystems":[]}
